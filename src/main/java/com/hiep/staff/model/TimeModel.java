@@ -31,6 +31,7 @@ public class TimeModel {
 	
 	private String break_total;
 	private String work_time;
+	private String work_total;
 
 	private String update_time;
 	private String update_date;

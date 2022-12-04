@@ -21,6 +21,7 @@ import com.hiep.staff.entity.TimeEntity;
 import com.hiep.staff.mapper.AccountsMapper;
 import com.hiep.staff.mapper.TimeMapper;
 import com.hiep.staff.model.AccountsModel;
+import com.hiep.staff.model.DateModel;
 import com.hiep.staff.model.DeleteModel;
 import com.hiep.staff.model.TimeModel;
 
@@ -56,7 +57,6 @@ public class MainController {
 	@GetMapping("search-staff-id/{id}")
 	public List<AccountsEntity> searchAccountByStaffId(@PathVariable int id) {
 		List<AccountsEntity> datas = accountsMapper.searchAccountByStaffId(id);
-		log.info("********:{}", id);
 
 		return datas;
 	}
@@ -72,6 +72,13 @@ public class MainController {
 	@GetMapping("search-account/{value}")
 	public List<AccountsEntity> searchAccount(@PathVariable int value) {
 		List<AccountsEntity> datas = accountsMapper.searchAccount(value);
+		return datas;
+	}
+
+	// login account
+	@PostMapping("login")
+	public List<AccountsEntity> login(@RequestBody AccountsModel accountsModel) {
+		List<AccountsEntity> datas = accountsMapper.login(accountsModel);
 		return datas;
 	}
 
@@ -92,6 +99,20 @@ public class MainController {
 		return datas;
 	}
 
+	@PostMapping("check-user")
+	public int checkUser(@RequestBody AccountsModel accountsModel) {
+		int result = accountsMapper.checkUser(accountsModel);
+
+		return result;
+	}
+
+	@PostMapping("check-staff-id")
+	public int checkStaffId(@RequestBody AccountsModel accountsModel) {
+		int result = accountsMapper.checkStaffId(accountsModel);
+
+		return result;
+	}
+
 	/**
 	 ** 
 	 ** CHECK TIME
@@ -108,7 +129,6 @@ public class MainController {
 	// 出勤
 	@PostMapping("time-in")
 	public MessageEntity timeIn(@RequestBody TimeModel timeModel) {
-		log.info("timeModel:{}", timeModel);
 
 		// Time
 		LocalTime localTime = LocalTime.now();
@@ -199,10 +219,9 @@ public class MainController {
 
 		// kiểm tra có phải đang trong trạng thái check in hay không
 		int checking = timeMapper.checking(timeModel.getStaff_id());
-		log.info("reusult checking:{}", checking);
 		if (checking > 0) {
 
-			// caculate time date
+			// caculate work time
 			String getTimeOneDay = timeMapper.getTimeDay(timeModel.getStaff_id());
 			String[] splitTime = getTimeOneDay.split(":");
 			int dataHour = Integer.parseInt(splitTime[0]);
@@ -211,10 +230,10 @@ public class MainController {
 			int dataMinute = Integer.parseInt(splitTime[1]);
 			int currentMinute = localTime.getMinute();
 
-			LocalTime hourDB = LocalTime.of(dataHour, dataMinute);
-			LocalTime hourPresen = LocalTime.of(currentHour, currentMinute);
+			LocalTime timeDB = LocalTime.of(dataHour, dataMinute);
+			LocalTime timeCurrent = LocalTime.of(currentHour, currentMinute);
 
-			Duration timeElapsed = Duration.between(hourDB, hourPresen);
+			Duration timeElapsed = Duration.between(timeDB, timeCurrent);
 
 			long totalMinuteWork = timeElapsed.getSeconds() / 60;
 
@@ -229,8 +248,8 @@ public class MainController {
 			}
 
 			String resultWorkTime = newHourWork + ":" + newMinuteWork;
+			
 
-			log.info("resultWorkTime:{}", resultWorkTime);
 			// set work time
 			timeModel.setWork_time(resultWorkTime);
 
@@ -250,12 +269,10 @@ public class MainController {
 			// giải lao hay chưa
 			int checkBreaking1 = timeMapper.checkBreaking1(timeModel.getStaff_id());
 
-			log.info("reusult checkBreaking1:{}", checkBreaking1);
 			if (checkBreaking1 > 0) {
 
 				// kiểm tra đã nghỉ giải lao lần 1 hay chưa
 				int checkHasBreakTime1 = timeMapper.checkHasBreakTime1(timeModel.getStaff_id());
-				log.info("reusult checkBreakLast1:{}", checkHasBreakTime1);
 				if (checkHasBreakTime1 > 0) {
 
 					/**
@@ -307,6 +324,32 @@ public class MainController {
 					
 					// set total break time in TimeModel
 					timeModel.setBreak_total(totalBreakTime);
+					
+					/**
+					 * work total = work_time - break_time
+					 * */
+					
+					LocalTime breakTime = LocalTime.of(totalHourInt, totalMinuteInt);
+					LocalTime workTime = LocalTime.of(Integer.valueOf(newHourWork), Integer.valueOf(newMinuteWork));
+
+					Duration WorkMinusBreak = Duration.between(breakTime, workTime);
+
+					long minWorkMinusBreak = WorkMinusBreak.getSeconds() / 60;
+
+					String newHourWorkMinusBreak = Long.toString(minWorkMinusBreak / 60);
+					String newMinuteWorkMinusBreak = Long.toString(minWorkMinusBreak % 60);
+					if (newHourWorkMinusBreak.length() < 2) {
+						newHourWorkMinusBreak = '0' + newHourWorkMinusBreak;
+					}
+
+					if (newMinuteWorkMinusBreak.length() < 2) {
+						newMinuteWorkMinusBreak = '0' + newMinuteWorkMinusBreak;
+					}
+
+					String resultWorkTotal = newHourWorkMinusBreak + ":" + newMinuteWorkMinusBreak;
+					
+					timeModel.setWork_total(resultWorkTotal);
+					// end
 
 					// kiểm tra đã vào giải lao lần 2 hay chưa
 					int checkHasBreakIn2 = timeMapper.checkHasBreakIn2(timeModel.getStaff_id());
@@ -340,6 +383,8 @@ public class MainController {
 				}
 			} else {
 				// không cần giải lao
+				timeModel.setWork_total(resultWorkTime);
+				
 				MessageEntity message = new MessageEntity();
 				message.setTitle(timeModel.getFullname() + " check out thành công.");
 				message.setStatus("success");
@@ -383,10 +428,7 @@ public class MainController {
 		String resultBreckIn = hour + ":" + minute;
 		timeModel.setBreak_in1(resultBreckIn);
 		timeModel.setBreak_in2(resultBreckIn);
-		
-		
 
-		
 		// kiểm tra có tài khoản trong trạng thái check in không
 		int checkBreaking1 = timeMapper.checkBreaking1(timeModel.getStaff_id());
 		if (checkBreaking1 > 0) {
@@ -423,10 +465,8 @@ public class MainController {
 			if (checking > 0) {
 				/***
 				 * 
-				 * start
-				 * check đi muộn
-				 * đi muộn thì không được kyukei trước thời gian chỉ định
-				 * */
+				 * start check đi muộn đi muộn thì không được kyukei trước thời gian chỉ định
+				 */
 				String getTimeOneDay = timeMapper.getTimeDay(timeModel.getStaff_id());
 				String[] splitTime = getTimeOneDay.split(":");
 				int dataHour = Integer.parseInt(splitTime[0]);
@@ -436,17 +476,17 @@ public class MainController {
 				int currentMinute = localTime.getMinute();
 				if (dataHour == currentHour && currentMinute < dataMinute) {
 					MessageEntity message = new MessageEntity();
-					message.setTitle(timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút mới có thể giải lao !");
+					message.setTitle(
+							timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút mới có thể giải lao !");
 					message.setStatus("warning");
 					return message;
 				}
 				/***
 				 * 
-				 * end
-				 * check đi muộn
+				 * end check đi muộn
 				 * 
-				 * */
-				
+				 */
+
 				MessageEntity message = new MessageEntity();
 				message.setTitle(timeModel.getFullname() + " bắt đầu giải lao thành công.");
 				message.setStatus("success");
@@ -520,45 +560,45 @@ public class MainController {
 			// kiêmt tra đã thoát giải lao lần 1 hay chưa
 			int checkHasBreakTime1 = timeMapper.checkHasBreakTime1(timeModel.getStaff_id());
 			if (checkHasBreakTime1 > 0) {
-				
+
 				// kiểm tra đã bấm giải lao lần 2 hay chưa
 				int checkHasBreakIn2 = timeMapper.checkHasBreakIn2(timeModel.getStaff_id());
-				if(checkHasBreakIn2 > 0) {
-					
+				if (checkHasBreakIn2 > 0) {
+
 					// caculate time break time 2
 					// start
 					String getTimeBreakOneDay2 = timeMapper.getTimeBreakOneDay2(timeModel.getStaff_id());
-					System.out.println("break_in2:" +getTimeBreakOneDay2 );
+					System.out.println("break_in2:" + getTimeBreakOneDay2);
 					String[] splitTime2 = getTimeBreakOneDay2.split(":");
 					int dataHour2 = Integer.parseInt(splitTime2[0]);
 					int currentHour2 = localTime.getHour();
-					
+
 					int dataMinute2 = Integer.parseInt(splitTime2[1]);
 					int currentMinute2 = localTime.getMinute();
-					
+
 					LocalTime hourDB2 = LocalTime.of(dataHour2, dataMinute2);
 					LocalTime hourPresen2 = LocalTime.of(currentHour2, currentMinute2);
-					
+
 					Duration timeElapsed2 = Duration.between(hourDB2, hourPresen2);
-					
+
 					long totalMinuteBreak2 = timeElapsed2.getSeconds() / 60;
-					
+
 					String newHourBreak2 = Long.toString(totalMinuteBreak2 / 60);
 					String newMinuteBreak2 = Long.toString(totalMinuteBreak2 % 60);
 					if (newHourBreak2.length() < 2) {
 						newHourBreak2 = '0' + newHourBreak2;
 					}
-					
+
 					if (newMinuteBreak2.length() < 2) {
 						newMinuteBreak2 = '0' + newMinuteBreak2;
 					}
-					
+
 					String resultBreakTime2 = newHourBreak2 + ":" + newMinuteBreak2;
 					// end
-					
+
 					// set break time
 					timeModel.setBreak_time2(resultBreakTime2);
-					
+
 					timeModel.setBreak_out2(hour + ":" + minute);
 					int checkHasBreakTime2 = timeMapper.checkHasBreakTime2(timeModel.getStaff_id());
 					if (checkHasBreakTime2 > 0) {
@@ -572,7 +612,7 @@ public class MainController {
 					message.setStatus("success");
 					timeMapper.insertBreakOut2(timeModel);
 					return message;
-				}else {
+				} else {
 					MessageEntity message = new MessageEntity();
 					message.setTitle(timeModel.getFullname() + " chưa bấm giải lao lần 2 !");
 					message.setStatus("error");
@@ -600,6 +640,44 @@ public class MainController {
 				return message;
 			}
 		}
+	}
+
+	// Query thời gian của hôm nay
+	@GetMapping("today")
+	public List<TimeEntity> getToday() {
+		LocalDate date = LocalDate.now();
+		String getYear = Integer.toString(date.getYear());
+		String getMonth = Integer.toString(date.getMonthValue());
+		String getDay = Integer.toString(date.getDayOfMonth());
+		
+		if(getYear.length() < 2) {
+			getYear = '0' + getYear;
+		}
+		if(getMonth.length() < 2) {
+			getMonth = '0' + getMonth;
+		}
+		if(getDay.length() < 2) {
+			getDay = '0' + getDay;
+		}
+
+		String today = getYear + "-" + getMonth + "-" + getDay;
+		List<TimeEntity> datas = timeMapper.getToday(today);
+		return datas;
+	}
+	
+	//search time by date
+	@PostMapping("/time/search")
+	public List<TimeEntity> searchTimeByDate(@RequestBody DateModel dateModel) {
+		log.info("dateModel:{}",dateModel);
+		List<TimeEntity> datas = timeMapper.searchTimeByDate(dateModel);
+		return datas;
+	}
+
+	// Query user đang online
+	@GetMapping("online")
+	public List<TimeEntity> getStatusOnline() {
+		List<TimeEntity> datas = timeMapper.getStatusOnline();
+		return datas;
 	}
 
 	@GetMapping("example")

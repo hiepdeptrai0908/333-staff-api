@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.hiep.staff.entity.TimeEntity;
+import com.hiep.staff.model.DateModel;
 import com.hiep.staff.model.TimeModel;
 
 @Mapper
@@ -47,6 +48,12 @@ public interface TimeMapper {
 	
 	// break total
 	List<TimeEntity> getAllBreakTime(int staff_id);
+
+	List<TimeEntity> getToday(String today);
+
+	List<TimeEntity> getStatusOnline();
+
+	List<TimeEntity> searchTimeByDate(DateModel dateModel);
 
 	
 }

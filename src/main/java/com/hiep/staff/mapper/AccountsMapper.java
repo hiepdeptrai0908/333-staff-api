@@ -24,4 +24,10 @@ public interface AccountsMapper {
 	int deleteAccount(DeleteModel deleteModel);
 
 	List<AccountsEntity> searchAccountByStaffId(int id);
+
+	int checkUser(AccountsModel accountsModel);
+
+	int checkStaffId(AccountsModel accountsModel);
+
+	List<AccountsEntity> login(AccountsModel accountsModel);
 }

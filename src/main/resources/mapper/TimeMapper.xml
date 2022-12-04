@@ -4,31 +4,59 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hiep.staff.mapper.TimeMapper">
 
-	<select id="getAllTime" resultType="com.hiep.staff.entity.TimeEntity">
-	
-		select * from d2k4prppg9am75
-	
+	<select id="getAllTime"
+		resultType="com.hiep.staff.entity.TimeEntity">
+
+		select * from checktime
+
 	</select>
-	
+
 	<select id="checking" resultType="int">
-		select count(*) from d2k4prppg9am75 where 
-		staff_id = #{staff_id} and 
+		select count(*) from checktime
+		where
+		staff_id = #{staff_id} and
 		time_out is null
 	</select>
-	
-	
-	
+
+
+
 	<select id="getTimeDay" resultType="String">
-		select time_in from d2k4prppg9am75 where 
-		staff_id = #{staff_id} and 
+		select time_in from checktime
+		where
+		staff_id = #{staff_id} and
 		time_in is not null and
 		time_out is null
 	</select>
-	
-	
+
+	<select id="getToday"
+		resultType="com.hiep.staff.entity.TimeEntity">
+		select * from checktime where date_in = #{today}
+	</select>
+
+	<select id="getStatusOnline"
+		resultType="com.hiep.staff.entity.TimeEntity">
+		select * from checktime where status = 'online' order by
+		time_in desc	
+	</select>
+
+	<select id="searchTimeByDate"
+		resultType="com.hiep.staff.entity.TimeEntity">
+		select * from checktime where date_in LIKE CONCAT (#{year}, '%')
+			
+			<if test="month != null">
+				and date_in LIKE CONCAT (#{year},'-',#{month}, '%')
+			</if>
+			<if test="day != null">
+				and date_in LIKE CONCAT (#{year},'-','%','-',#{day})
+			</if>
+		<!-- date_in LIKE CONCAT (#{year},'-',#{month}, '%') -->
+
+	</select>
+
+
 	<!-- 出勤 -->
 	<insert id="insertTimeIn">
-		INSERT INTO d2k4prppg9am75(
+		INSERT INTO checktime(
 		staff_id,
 		fullname,
 		time_in,
@@ -43,133 +71,151 @@
 		#{status}
 		)
 	</insert>
-	
+
 	<!-- 退勤 -->
 	<update id="insertTimeOut">
-		UPDATE d2k4prppg9am75
+		UPDATE checktime
 		SET
 		time_out = #{time_out},
-		date_out = #{date_out},
+		date_out =
+		#{date_out},
 		break_total = #{break_total},
 		status = #{status},
-		work_time = #{work_time}
-		where staff_id = #{staff_id} and 
+		work_time
+		= #{work_time},
+		work_total = #{work_total}
+		where staff_id = #{staff_id}
+		and
 		time_out is null
 	</update>
-	
+
 	<!-- break1 -->
 	<!-- 休憩開始 -->
 	<update id="insertBreakIn1">
-		UPDATE d2k4prppg9am75
+		UPDATE checktime
 		SET
 		break_in1 = #{break_in1}
 		WHERE
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is null
 	</update>
-	
+
 	<!-- 休憩終了 -->
 	<update id="insertBreakOut1">
-		UPDATE d2k4prppg9am75
+		UPDATE checktime
 		SET
 		break_out1 = #{break_out1},
 		break_time1 = #{break_time1}
 		WHERE
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is
+		null and
 		break_in1 is not null
 	</update>
-	
+
 	<select id="checkBreaking1" resultType="int">
-		select count(*) from d2k4prppg9am75 where 
+		select count(*) from
+		checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is not null
 	</select>
-	
+
 	<select id="checkBreakLast1" resultType="int">
-		select count(*) from d2k4prppg9am75 where 
+		select count(*) from
+		checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is not null and
 		break_out1 is not null
 	</select>
-	
+
 	<select id="getTimeBreakOneDay1" resultType="String">
-		select break_in1 from d2k4prppg9am75 where 
-		staff_id = #{staff_id} and 
+		select break_in1
+		from checktime where
+		staff_id = #{staff_id} and
 		time_in is not null and
 		time_out is null and
 		break_in1 is not null
 	</select>
-	
+
 	<!-- break2 -->
 	<select id="checkHasBreakTime1" resultType="int">
-		select count(*) from d2k4prppg9am75 where 
+		select count(*) from
+		checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is not null and
 		break_time1 is not null
 	</select>
-	
+
 	<select id="checkHasBreakIn2" resultType="int">
-		select count(*) from d2k4prppg9am75 where 
+		select count(*) from
+		checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is not null and
 		break_time1 is not null and
-		break_in2 is not null
+		break_in2 is not
+		null
 	</select>
-	
+
 	<select id="checkHasBreakTime2" resultType="int">
-		select count(*) from d2k4prppg9am75 where 
+		select count(*) from
+		checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is not null and
 		break_time1 is not null and
-		break_in2 is not null and
+		break_in2 is not
+		null and
 		break_time2 is not null
 	</select>
-	
+
 	<update id="insertBreakIn2">
-		UPDATE d2k4prppg9am75
+		UPDATE checktime
 		SET
 		break_in2 = #{break_in2}
 		WHERE
 		staff_id = #{staff_id} and
-		time_out is null and 
-		break_in1 is not null and
+		time_out is null and
+		break_in1 is not null
+		and
 		break_time1 is not null
 	</update>
-	
+
 	<update id="insertBreakOut2">
-		UPDATE d2k4prppg9am75
+		UPDATE checktime
 		SET
 		break_out2 = #{break_out2},
 		break_time2 = #{break_time2}
 		WHERE
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is
+		null and
 		break_in1 is not null and
 		break_in2 is not null
 	</update>
-	
+
 	<select id="getTimeBreakOneDay2" resultType="String">
-		select break_in2 from d2k4prppg9am75 where 
+		select break_in2
+		from checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
+		time_out is null and
 		break_in1 is not null and
 		break_in2 is not null
 	</select>
-	
+
 	<!-- break total -->
-	<select id="getAllBreakTime" resultType="com.hiep.staff.entity.TimeEntity">
-		select break_time1,break_time2 from d2k4prppg9am75 where 
+	<select id="getAllBreakTime"
+		resultType="com.hiep.staff.entity.TimeEntity">
+		select break_time1,break_time2 from checktime where
 		staff_id = #{staff_id} and
-		time_out is null and 
-		break_in1 is not null and
+		time_out is null and
+		break_in1 is not null
+		and
 		break_time1 is not null
 	</select>
-	
+
 </mapper>
