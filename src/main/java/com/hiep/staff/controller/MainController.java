@@ -125,6 +125,12 @@ public class MainController {
 		List<TimeEntity> datas = timeMapper.getAllTime();
 		return datas;
 	}
+	
+	@PostMapping("get-time")
+	public List<TimeEntity> getTimeByTimeId(@RequestBody TimeModel timeModel) {
+		List<TimeEntity> datas = timeMapper.getTimeByTimeId(timeModel);
+		return datas;
+	}
 
 	// 出勤
 	@PostMapping("time-in")

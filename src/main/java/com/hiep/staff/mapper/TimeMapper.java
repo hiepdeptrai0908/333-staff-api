@@ -55,5 +55,7 @@ public interface TimeMapper {
 
 	List<TimeEntity> searchTimeByDate(DateModel dateModel);
 
+	List<TimeEntity> getTimeByTimeId(TimeModel timeModel);
+
 	
 }

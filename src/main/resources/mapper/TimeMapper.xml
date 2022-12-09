@@ -10,6 +10,12 @@
 		select * from checktime
 
 	</select>
+	<select id="getTimeByTimeId"
+		resultType="com.hiep.staff.entity.TimeEntity">
+
+		select * from checktime where time_id = #{time_id}
+
+	</select>
 
 	<select id="checking" resultType="int">
 		select count(*) from checktime
