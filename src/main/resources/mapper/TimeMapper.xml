@@ -27,7 +27,15 @@
 
 
 	<select id="getTimeDay" resultType="String">
-		select time_in from checktime
+		select time_in,date_in from checktime
+		where
+		staff_id = #{staff_id} and
+		time_in is not null and
+		time_out is null
+	</select>
+	
+	<select id="getDateDay" resultType="String">
+		select date_in from checktime
 		where
 		staff_id = #{staff_id} and
 		time_in is not null and

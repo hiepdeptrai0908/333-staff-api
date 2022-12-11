@@ -20,6 +20,8 @@ public interface TimeMapper {
 	int checking(int staff_id);
 
 	String getTimeDay(int staff_id);
+	String getDateDay(int staff_id);
+	
 
 	String getTimeBreakOneDay1(int staff_id);
 	

@@ -2,6 +2,7 @@ package com.hiep.staff.controller;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -125,7 +126,7 @@ public class MainController {
 		List<TimeEntity> datas = timeMapper.getAllTime();
 		return datas;
 	}
-	
+
 	@PostMapping("get-time")
 	public List<TimeEntity> getTimeByTimeId(@RequestBody TimeModel timeModel) {
 		List<TimeEntity> datas = timeMapper.getTimeByTimeId(timeModel);
@@ -228,7 +229,18 @@ public class MainController {
 		if (checking > 0) {
 
 			// caculate work time
+			String getDateOneDay = timeMapper.getDateDay(timeModel.getStaff_id());
 			String getTimeOneDay = timeMapper.getTimeDay(timeModel.getStaff_id());
+
+			String[] splitDate = getDateOneDay.split("-");
+			int dataYear = Integer.parseInt(splitDate[0]);
+			int dataMonth = Integer.parseInt(splitDate[1]);
+			int dataDay = Integer.parseInt(splitDate[2]);
+
+			int nowYear = localDate.getYear();
+			int nowMonth = localDate.getMonthValue();
+			int nowDay = localDate.getDayOfMonth();
+
 			String[] splitTime = getTimeOneDay.split(":");
 			int dataHour = Integer.parseInt(splitTime[0]);
 			int currentHour = localTime.getHour();
@@ -236,8 +248,8 @@ public class MainController {
 			int dataMinute = Integer.parseInt(splitTime[1]);
 			int currentMinute = localTime.getMinute();
 
-			LocalTime timeDB = LocalTime.of(dataHour, dataMinute);
-			LocalTime timeCurrent = LocalTime.of(currentHour, currentMinute);
+			LocalDateTime timeDB = LocalDateTime.of(dataYear, dataMonth, dataDay, dataHour, dataMinute);
+			LocalDateTime timeCurrent = LocalDateTime.of(nowYear, nowMonth, nowDay, currentHour, currentMinute);
 
 			Duration timeElapsed = Duration.between(timeDB, timeCurrent);
 
@@ -254,7 +266,6 @@ public class MainController {
 			}
 
 			String resultWorkTime = newHourWork + ":" + newMinuteWork;
-			
 
 			// set work time
 			timeModel.setWork_time(resultWorkTime);
@@ -262,7 +273,8 @@ public class MainController {
 			// Nếu đến muộn mà còn check out sớm
 			if (dataHour == currentHour && currentMinute < dataMinute) {
 				MessageEntity message = new MessageEntity();
-				message.setTitle(timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút nữa mới có thể check out !");
+				message.setTitle(
+						timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút nữa mới có thể check out !");
 				message.setStatus("warning");
 				return message;
 			}
@@ -283,11 +295,11 @@ public class MainController {
 
 					/**
 					 * start total break time
-					 * */
+					 */
 					List<TimeEntity> getAllBreakTime = timeMapper.getAllBreakTime(timeModel.getStaff_id());
 					String resultBreakTime1 = getAllBreakTime.get(0).getBreak_time1();
 					String resultBreakTime2 = getAllBreakTime.get(0).getBreak_time2();
-					
+
 					// nếu không giải lao lần 2
 					if (resultBreakTime2 == null) {
 						resultBreakTime2 = "00:00";
@@ -306,13 +318,13 @@ public class MainController {
 
 					int totalHourInt = hourBreakTime1 + hourBreakTime2;
 					int totalMinuteInt = minuteBreakTime1 + minuteBreakTime2;
-					
+
 					if (totalMinuteInt >= 60) {
 						System.out.println("totalMinuteInt % 60:" + totalMinuteInt % 60);
 						totalMinuteInt = totalMinuteInt % 60;
 						++totalHourInt;
 					}
-					
+
 					String totalHour = Integer.toString(totalHourInt);
 					String totalMinute = Integer.toString(totalMinuteInt);
 
@@ -325,16 +337,16 @@ public class MainController {
 
 					String totalBreakTime = totalHour + ":" + totalMinute;
 					/**
-					 *  total break time
-					 * */
-					
+					 * total break time
+					 */
+
 					// set total break time in TimeModel
 					timeModel.setBreak_total(totalBreakTime);
-					
+
 					/**
 					 * work total = work_time - break_time
-					 * */
-					
+					 */
+
 					LocalTime breakTime = LocalTime.of(totalHourInt, totalMinuteInt);
 					LocalTime workTime = LocalTime.of(Integer.valueOf(newHourWork), Integer.valueOf(newMinuteWork));
 
@@ -353,7 +365,7 @@ public class MainController {
 					}
 
 					String resultWorkTotal = newHourWorkMinusBreak + ":" + newMinuteWorkMinusBreak;
-					
+
 					timeModel.setWork_total(resultWorkTotal);
 					// end
 
@@ -390,7 +402,7 @@ public class MainController {
 			} else {
 				// không cần giải lao
 				timeModel.setWork_total(resultWorkTime);
-				
+
 				MessageEntity message = new MessageEntity();
 				message.setTitle(timeModel.getFullname() + " check out thành công.");
 				message.setStatus("success");
@@ -655,14 +667,14 @@ public class MainController {
 		String getYear = Integer.toString(date.getYear());
 		String getMonth = Integer.toString(date.getMonthValue());
 		String getDay = Integer.toString(date.getDayOfMonth());
-		
-		if(getYear.length() < 2) {
+
+		if (getYear.length() < 2) {
 			getYear = '0' + getYear;
 		}
-		if(getMonth.length() < 2) {
+		if (getMonth.length() < 2) {
 			getMonth = '0' + getMonth;
 		}
-		if(getDay.length() < 2) {
+		if (getDay.length() < 2) {
 			getDay = '0' + getDay;
 		}
 
@@ -670,11 +682,11 @@ public class MainController {
 		List<TimeEntity> datas = timeMapper.getToday(today);
 		return datas;
 	}
-	
-	//search time by date
+
+	// search time by date
 	@PostMapping("/time/search")
 	public List<TimeEntity> searchTimeByDate(@RequestBody DateModel dateModel) {
-		log.info("dateModel:{}",dateModel);
+		log.info("dateModel:{}", dateModel);
 		List<TimeEntity> datas = timeMapper.searchTimeByDate(dateModel);
 		return datas;
 	}
