@@ -154,6 +154,11 @@ public class MainController {
 		if (minute.length() < 2) {
 			minute = '0' + minute;
 		}
+//		
+//		System.out.println("hour :" + hour);
+//		
+//		System.out.println("custome mimute :" + customMinute);
+//		System.out.println("mimute :" + minute);
 
 		// Date
 		LocalDate localDate = LocalDate.now();
@@ -679,7 +684,6 @@ public class MainController {
 		}
 
 		String today = getYear + "-" + getMonth + "-" + getDay;
-		System.out.println(today);
 		List<TimeEntity> datas = timeMapper.getToday(today);
 		return datas;
 	}
