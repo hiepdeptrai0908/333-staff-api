@@ -679,6 +679,7 @@ public class MainController {
 		}
 
 		String today = getYear + "-" + getMonth + "-" + getDay;
+		System.out.println(today);
 		List<TimeEntity> datas = timeMapper.getToday(today);
 		return datas;
 	}
