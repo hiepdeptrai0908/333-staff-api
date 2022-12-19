@@ -231,5 +231,59 @@
 		and
 		break_time1 is not null
 	</select>
+	
+	<!-- update time -->
+	<select id="checkIsChangeBreakTotal" resultType="int">
+		select count(break_total)
+		from checktime where
+		time_id = #{time_id} and
+		break_total = #{break_total}
+	</select>
+	
+	<update id="updateWhenIsChangeBreakTotal">
+		UPDATE checktime
+		SET
+		staff_id = #{staff_id},
+		fullname = #{fullname},
+		time_in = #{time_in},
+		time_out = #{time_out},
+		date_in = #{date_in},
+		date_out = #{date_out},
+		break_in1 = '00:00',
+		break_out1 = '00:00',
+		break_time1 = '00:00',
+		break_in2 = '00:00',
+		break_out2 = '00:00',
+		break_time2 = '00:00',
+		break_total = #{break_total},
+		work_time = #{work_time},
+		work_total = #{work_total},
+		update_time = #{update_time},
+		update_date = #{update_date},
+		update_user = #{update_user},
+		status = #{status}
+		WHERE
+		time_id = #{time_id}
+	</update>
+	
+	<update id="updateWhenNotChangeBreakTotal">
+		UPDATE checktime
+		SET
+		staff_id = #{staff_id},
+		fullname = #{fullname},
+		time_in = #{time_in},
+		time_out = #{time_out},
+		date_in = #{date_in},
+		date_out = #{date_out},
+		work_time = #{work_time},
+		work_total = #{work_total},
+		update_time = #{update_time},
+		update_date = #{update_date},
+		update_user = #{update_user},
+		status = #{status}
+		WHERE
+		time_id = #{time_id}
+	</update>
+	
 
 </mapper>

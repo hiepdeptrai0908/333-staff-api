@@ -702,6 +702,57 @@ public class MainController {
 		List<TimeEntity> datas = timeMapper.getStatusOnline();
 		return datas;
 	}
+	
+	@PostMapping("update-time")
+	public List<TimeEntity> updateTime(@RequestBody TimeModel timeModel) {
+		
+		// date
+		LocalDate localDate = LocalDate.now();
+		String year = Integer.toString(localDate.getYear());
+		String month = Integer.toString(localDate.getMonthValue());
+		String day = Integer.toString(localDate.getDayOfMonth());
+		if (year.length() < 2) {
+			year = '0' + year;
+		}
+		if (month.length() < 2) {
+			month = '0' + month;
+		}
+		if (day.length() < 2) {
+			day = '0' + day;
+		}
+		
+		String dateUpdate = year + "-" + month + "-" + day;
+		timeModel.setUpdate_time(dateUpdate);
+		
+		// time
+		LocalTime localTime = LocalTime.now();
+		String hour = Integer.toString(localTime.getHour());
+		if (hour.length() < 2) {
+			hour = '0' + hour;
+		}
+
+		String minute = Integer.toString(localTime.getMinute());
+		if (minute.length() < 2) {
+			minute = '0' + minute;
+		}
+
+		String timeUpdate = hour + ":" + minute;
+		timeModel.setUpdate_date(dateUpdate);
+		timeModel.setUpdate_time(timeUpdate);
+		
+		log.info("timeModel:{}",timeModel);
+		int isChangeBreakTotal = timeMapper.checkIsChangeBreakTotal(timeModel);
+		if(isChangeBreakTotal == 0) {
+			timeMapper.updateWhenIsChangeBreakTotal(timeModel);
+		}else if(isChangeBreakTotal == 1) {
+			timeMapper.updateWhenNotChangeBreakTotal(timeModel);
+		}else {
+			 log.info("message update: Dữ liệu có vấn đề !");
+		}
+		
+		List<TimeEntity> datas = timeMapper.getTimeByTimeId(timeModel);
+		return datas;
+	}
 
 	@GetMapping("example")
 	public void example(@RequestBody TimeModel timeModel) {

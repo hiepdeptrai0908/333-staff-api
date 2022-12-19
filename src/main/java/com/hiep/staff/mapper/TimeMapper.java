@@ -59,5 +59,11 @@ public interface TimeMapper {
 
 	List<TimeEntity> getTimeByTimeId(TimeModel timeModel);
 
+	int checkIsChangeBreakTotal(TimeModel timeModel);
+
+	void updateWhenIsChangeBreakTotal(TimeModel timeModel);
+
+	void updateWhenNotChangeBreakTotal(TimeModel timeModel);
+
 	
 }
