@@ -30,4 +30,8 @@ public interface AccountsMapper {
 	int checkStaffId(AccountsModel accountsModel);
 
 	List<AccountsEntity> login(AccountsModel accountsModel);
+
+	void updateUser(AccountsModel accountsModel);
+
+	void updatePassword(AccountsModel accountsModel);
 }

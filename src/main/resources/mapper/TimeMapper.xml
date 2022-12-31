@@ -75,6 +75,7 @@
 		fullname,
 		time_in,
 		date_in,
+		break_total,
 		status
 		) VALUES
 		(
@@ -82,6 +83,7 @@
 		#{fullname},
 		#{time_in},
 		#{date_in},
+		#{break_total},
 		#{status}
 		)
 	</insert>
@@ -284,6 +286,11 @@
 		WHERE
 		time_id = #{time_id}
 	</update>
+	
+	<delete id="deleteTime">
+		delete from checktime where
+		time_id = #{id}
+	</delete>
 	
 
 </mapper>

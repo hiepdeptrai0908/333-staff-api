@@ -65,5 +65,7 @@ public interface TimeMapper {
 
 	void updateWhenNotChangeBreakTotal(TimeModel timeModel);
 
+	void deleteTime(Number id);
+
 	
 }

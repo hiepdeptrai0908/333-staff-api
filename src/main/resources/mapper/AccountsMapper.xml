@@ -113,4 +113,25 @@
 		where user_id =
 		#{user_id}
 	</update>
+	<update id="updateUser">
+		UPDATE accounts
+		SET
+		username = #{username},
+		fullname = #{fullname},
+		staff_id = #{staff_id},
+		sex = #{sex},
+		birthday = #{birthday},
+		email = #{email},
+		phone_number = #{phone_number},
+		address = #{address},
+		update_at = #{update_at}
+		where user_id = #{user_id}
+	</update>
+	<update id="updatePassword">
+		UPDATE accounts
+		SET
+		password = #{password},
+		update_at = #{update_at}
+		where user_id = #{user_id}
+	</update>
 </mapper>

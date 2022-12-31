@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -113,11 +114,68 @@ public class MainController {
 
 		return result;
 	}
+	
+	@PostMapping("update-user")
+	public void updateUser(@RequestBody AccountsModel accountsModel) {
+		LocalDate localDate = LocalDate.now();
+		String year = Integer.toString(localDate.getYear());
+		String month = Integer.toString(localDate.getMonthValue());
+		String day = Integer.toString(localDate.getDayOfMonth());
+		if (year.length() < 2) {
+			year = '0' + year;
+		}
+		if (month.length() < 2) {
+			month = '0' + month;
+		}
+		if (day.length() < 2) {
+			day = '0' + day;
+		}
+		
+		String dateUpdate = year + "-" + month + "-" + day;
+		accountsModel.setUpdate_at(dateUpdate);
+		accountsMapper.updateUser(accountsModel);
+	}
+	
+	@PostMapping("update-password")
+	public void updatePassword(@RequestBody AccountsModel accountsModel) {
+		LocalDate localDate = LocalDate.now();
+		String year = Integer.toString(localDate.getYear());
+		String month = Integer.toString(localDate.getMonthValue());
+		String day = Integer.toString(localDate.getDayOfMonth());
+		if (year.length() < 2) {
+			year = '0' + year;
+		}
+		if (month.length() < 2) {
+			month = '0' + month;
+		}
+		if (day.length() < 2) {
+			day = '0' + day;
+		}
+		
+		String dateUpdate = year + "-" + month + "-" + day;
+		accountsModel.setUpdate_at(dateUpdate);
+		accountsMapper.updatePassword(accountsModel);
+	}
+	
+	
 
 	/**
 	 ** 
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
 	 ** CHECK TIME
 	 **
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
 	 **/
 
 	// get all list time
@@ -180,6 +238,7 @@ public class MainController {
 		timeIn.setFullname(timeModel.getFullname());
 		timeIn.setTime_in(hour + ":" + minute);
 		timeIn.setDate_in(year + "-" + month + "-" + day);
+		timeIn.setBreak_total("00:00");
 		timeIn.setStatus("online");
 
 		// check is online ?
@@ -740,7 +799,7 @@ public class MainController {
 		timeModel.setUpdate_date(dateUpdate);
 		timeModel.setUpdate_time(timeUpdate);
 		
-		log.info("timeModel:{}",timeModel);
+		log.info("timeModel:{}",timeModel.getBreak_total());
 		int isChangeBreakTotal = timeMapper.checkIsChangeBreakTotal(timeModel);
 		if(isChangeBreakTotal == 0) {
 			timeMapper.updateWhenIsChangeBreakTotal(timeModel);
@@ -752,6 +811,11 @@ public class MainController {
 		
 		List<TimeEntity> datas = timeMapper.getTimeByTimeId(timeModel);
 		return datas;
+	}
+	
+	@GetMapping("delete-time/{id}")
+	public void deleteTime(@PathVariable Number id){
+		timeMapper.deleteTime(id);
 	}
 
 	@GetMapping("example")
