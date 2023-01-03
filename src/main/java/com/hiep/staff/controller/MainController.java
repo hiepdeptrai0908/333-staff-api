@@ -832,7 +832,7 @@ public class MainController {
 
 		int minute = 0;
 		int hour = 0;
-		if (workTotals.size() > 1) {
+		if (workTotals.size() < 1) {
 			for (WorkTotalEntity workTotalEntity : workTotals) {
 				
 				String[] splitStrings = (workTotalEntity.getWork_total() == null ? "00:00" : workTotalEntity.getWork_total()).split(":");
