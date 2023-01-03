@@ -117,7 +117,7 @@ public class MainController {
 
 		return result;
 	}
-	
+
 	@PostMapping("update-user")
 	public void updateUser(@RequestBody AccountsModel accountsModel) {
 		LocalDate localDate = LocalDate.now();
@@ -133,12 +133,12 @@ public class MainController {
 		if (day.length() < 2) {
 			day = '0' + day;
 		}
-		
+
 		String dateUpdate = year + "-" + month + "-" + day;
 		accountsModel.setUpdate_at(dateUpdate);
 		accountsMapper.updateUser(accountsModel);
 	}
-	
+
 	@PostMapping("update-password")
 	public void updatePassword(@RequestBody AccountsModel accountsModel) {
 		LocalDate localDate = LocalDate.now();
@@ -154,13 +154,11 @@ public class MainController {
 		if (day.length() < 2) {
 			day = '0' + day;
 		}
-		
+
 		String dateUpdate = year + "-" + month + "-" + day;
 		accountsModel.setUpdate_at(dateUpdate);
 		accountsMapper.updatePassword(accountsModel);
 	}
-	
-	
 
 	/**
 	 ** 
@@ -764,10 +762,10 @@ public class MainController {
 		List<TimeEntity> datas = timeMapper.getStatusOnline();
 		return datas;
 	}
-	
+
 	@PostMapping("update-time")
 	public List<TimeEntity> updateTime(@RequestBody TimeModel timeModel) {
-		
+
 		// date
 		LocalDate localDate = LocalDate.now();
 		String year = Integer.toString(localDate.getYear());
@@ -782,10 +780,10 @@ public class MainController {
 		if (day.length() < 2) {
 			day = '0' + day;
 		}
-		
+
 		String dateUpdate = year + "-" + month + "-" + day;
 		timeModel.setUpdate_time(dateUpdate);
-		
+
 		// time
 		LocalTime localTime = LocalTime.now();
 		String hour = Integer.toString(localTime.getHour());
@@ -801,68 +799,63 @@ public class MainController {
 		String timeUpdate = hour + ":" + minute;
 		timeModel.setUpdate_date(dateUpdate);
 		timeModel.setUpdate_time(timeUpdate);
-		
-		log.info("timeModel:{}",timeModel.getBreak_total());
+
+		log.info("timeModel:{}", timeModel.getBreak_total());
 		int isChangeBreakTotal = timeMapper.checkIsChangeBreakTotal(timeModel);
-		if(isChangeBreakTotal == 0) {
+		if (isChangeBreakTotal == 0) {
 			timeMapper.updateWhenIsChangeBreakTotal(timeModel);
-		}else if(isChangeBreakTotal == 1) {
+		} else if (isChangeBreakTotal == 1) {
 			timeMapper.updateWhenNotChangeBreakTotal(timeModel);
-		}else {
-			 log.info("message update: Dữ liệu có vấn đề !");
+		} else {
+			log.info("message update: Dữ liệu có vấn đề !");
 		}
-		
+
 		List<TimeEntity> datas = timeMapper.getTimeByTimeId(timeModel);
 		return datas;
 	}
-	
+
 	@GetMapping("delete-time/{id}")
-	public void deleteTime(@PathVariable Number id){
+	public void deleteTime(@PathVariable Number id) {
 		timeMapper.deleteTime(id);
 	}
-	
+
 	@PostMapping("search-time-user")
 	public List<TimeEntity> searchTimeUser(@RequestBody DateModel dateModel) {
 		List<TimeEntity> datas = timeMapper.searchTimeUser(dateModel);
-		List<WorkTotalEntity> workTotaks = timeMapper.sumTime(dateModel);
-		int minute = 0;
-		int hour = 0;
-		for (WorkTotalEntity workTotalEntity : workTotaks) {
-			String[] splitStrings = workTotalEntity.getWork_total().split(":");
-			int getHour = Integer.valueOf(splitStrings[0]) ;
-			int getMinute = Integer.valueOf(splitStrings[1]);
-			hour += getHour;
-			minute += getMinute;
-		}
-		int getHourFromMinute = minute / 60;
-		int newHour = hour + getHourFromMinute;
-		int newMinute = minute % 60;
-		
+
 		return datas;
 	}
-	
+
 	@PostMapping("total-month-time")
 	public WorkTotalEntity totalMonthTime(@RequestBody DateModel dateModel) {
-		List<WorkTotalEntity> workTotaks = timeMapper.sumTime(dateModel);
+		List<WorkTotalEntity> workTotals = timeMapper.sumTime(dateModel);
+
 		int minute = 0;
 		int hour = 0;
-		for (WorkTotalEntity workTotalEntity : workTotaks) {
-			String[] splitStrings = workTotalEntity.getWork_total().split(":");
-			int getHour = Integer.valueOf(splitStrings[0]) ;
-			int getMinute = Integer.valueOf(splitStrings[1]);
-			hour += getHour;
-			minute += getMinute;
+		if (workTotals.size() > 1) {
+			for (WorkTotalEntity workTotalEntity : workTotals) {
+				
+				String[] splitStrings = (workTotalEntity.getWork_total() == null ? "00:00" : workTotalEntity.getWork_total()).split(":");
+				int getHour = Integer.valueOf(splitStrings[0]);
+				int getMinute = Integer.valueOf(splitStrings[1]);
+				hour += getHour;
+				minute += getMinute;
+			}
+			
 		}
+
 		int getHourFromMinute = minute / 60;
 		int newHour = hour + getHourFromMinute;
 		int newMinute = minute % 60;
 		WorkTotalEntity workTotalEntity = new WorkTotalEntity();
 		workTotalEntity.setHour(Integer.toString(newHour));
 		workTotalEntity.setMinute(Integer.toString(newMinute));
-		workTotalEntity.setWork_total((Integer.toString(newHour).length() < 2 ? "0" + Integer.toString(newHour) : Integer.toString(newHour)) + ":" + (Integer.toString(newMinute).length() < 2 ? "0" + Integer.toString(newMinute) : Integer.toString(newMinute)));
+		workTotalEntity.setWork_total(
+				(Integer.toString(newHour).length() < 2 ? "0" + Integer.toString(newHour) : Integer.toString(newHour))
+						+ ":" + (Integer.toString(newMinute).length() < 2 ? "0" + Integer.toString(newMinute)
+								: Integer.toString(newMinute)));
 		return workTotalEntity;
 	}
-	
 
 	@GetMapping("example")
 	public void example(@RequestBody TimeModel timeModel) {
