@@ -188,6 +188,17 @@
 		null and
 		break_time2 is not null
 	</select>
+	
+	<select id="searchTimeUser" resultType="com.hiep.staff.entity.TimeEntity">
+		select * from checktime where staff_id = #{staff_id} and 
+		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
+	</select>
+	
+	<select id="sumTime" resultType="com.hiep.staff.entity.WorkTotalEntity">
+		SELECT work_total
+		FROM checktime where staff_id = #{staff_id} and 	
+		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
+	</select>
 
 	<update id="insertBreakIn2">
 		UPDATE checktime

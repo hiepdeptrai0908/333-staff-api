@@ -1,5 +1,6 @@
 package com.hiep.staff.controller;
 
+import java.sql.Array;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.TinyBitSet;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hiep.staff.entity.AccountsEntity;
 import com.hiep.staff.entity.MessageEntity;
 import com.hiep.staff.entity.TimeEntity;
+import com.hiep.staff.entity.WorkTotalEntity;
 import com.hiep.staff.mapper.AccountsMapper;
 import com.hiep.staff.mapper.TimeMapper;
 import com.hiep.staff.model.AccountsModel;
@@ -817,6 +820,49 @@ public class MainController {
 	public void deleteTime(@PathVariable Number id){
 		timeMapper.deleteTime(id);
 	}
+	
+	@PostMapping("search-time-user")
+	public List<TimeEntity> searchTimeUser(@RequestBody DateModel dateModel) {
+		List<TimeEntity> datas = timeMapper.searchTimeUser(dateModel);
+		List<WorkTotalEntity> workTotaks = timeMapper.sumTime(dateModel);
+		int minute = 0;
+		int hour = 0;
+		for (WorkTotalEntity workTotalEntity : workTotaks) {
+			String[] splitStrings = workTotalEntity.getWork_total().split(":");
+			int getHour = Integer.valueOf(splitStrings[0]) ;
+			int getMinute = Integer.valueOf(splitStrings[1]);
+			hour += getHour;
+			minute += getMinute;
+		}
+		int getHourFromMinute = minute / 60;
+		int newHour = hour + getHourFromMinute;
+		int newMinute = minute % 60;
+		
+		return datas;
+	}
+	
+	@PostMapping("total-month-time")
+	public WorkTotalEntity totalMonthTime(@RequestBody DateModel dateModel) {
+		List<WorkTotalEntity> workTotaks = timeMapper.sumTime(dateModel);
+		int minute = 0;
+		int hour = 0;
+		for (WorkTotalEntity workTotalEntity : workTotaks) {
+			String[] splitStrings = workTotalEntity.getWork_total().split(":");
+			int getHour = Integer.valueOf(splitStrings[0]) ;
+			int getMinute = Integer.valueOf(splitStrings[1]);
+			hour += getHour;
+			minute += getMinute;
+		}
+		int getHourFromMinute = minute / 60;
+		int newHour = hour + getHourFromMinute;
+		int newMinute = minute % 60;
+		WorkTotalEntity workTotalEntity = new WorkTotalEntity();
+		workTotalEntity.setHour(Integer.toString(newHour));
+		workTotalEntity.setMinute(Integer.toString(newMinute));
+		workTotalEntity.setWork_total((Integer.toString(newHour).length() < 2 ? "0" + Integer.toString(newHour) : Integer.toString(newHour)) + ":" + (Integer.toString(newMinute).length() < 2 ? "0" + Integer.toString(newMinute) : Integer.toString(newMinute)));
+		return workTotalEntity;
+	}
+	
 
 	@GetMapping("example")
 	public void example(@RequestBody TimeModel timeModel) {

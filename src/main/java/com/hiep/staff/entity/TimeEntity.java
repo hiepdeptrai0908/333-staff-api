@@ -38,6 +38,8 @@ public class TimeEntity {
 	private String update_time;
 	private String update_date;
 	private String update_user;
+	
+	private String month_total;
 
 	private String status;
 

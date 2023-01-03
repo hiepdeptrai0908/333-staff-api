@@ -1,10 +1,12 @@
 package com.hiep.staff.mapper;
 
+import java.sql.Array;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.hiep.staff.entity.TimeEntity;
+import com.hiep.staff.entity.WorkTotalEntity;
 import com.hiep.staff.model.DateModel;
 import com.hiep.staff.model.TimeModel;
 
@@ -66,6 +68,10 @@ public interface TimeMapper {
 	void updateWhenNotChangeBreakTotal(TimeModel timeModel);
 
 	void deleteTime(Number id);
+
+	List<TimeEntity> searchTimeUser(DateModel dateModel);
+
+	List<WorkTotalEntity> sumTime(DateModel dateModel);
 
 	
 }
