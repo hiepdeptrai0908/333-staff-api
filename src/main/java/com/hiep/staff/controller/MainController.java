@@ -800,7 +800,6 @@ public class MainController {
 		timeModel.setUpdate_date(dateUpdate);
 		timeModel.setUpdate_time(timeUpdate);
 
-		log.info("timeModel:{}", timeModel.getBreak_total());
 		int isChangeBreakTotal = timeMapper.checkIsChangeBreakTotal(timeModel);
 		if (isChangeBreakTotal == 0) {
 			timeMapper.updateWhenIsChangeBreakTotal(timeModel);
@@ -830,18 +829,23 @@ public class MainController {
 	public WorkTotalEntity totalMonthTime(@RequestBody DateModel dateModel) {
 		List<WorkTotalEntity> workTotals = timeMapper.sumTime(dateModel);
 
+		log.info("workTotals:{}", workTotals);
+
 		int minute = 0;
 		int hour = 0;
-		if (workTotals.size() < 1) {
-			for (WorkTotalEntity workTotalEntity : workTotals) {
-				
-				String[] splitStrings = (workTotalEntity.getWork_total() == null ? "00:00" : workTotalEntity.getWork_total()).split(":");
-				int getHour = Integer.valueOf(splitStrings[0]);
-				int getMinute = Integer.valueOf(splitStrings[1]);
-				hour += getHour;
-				minute += getMinute;
+		for (WorkTotalEntity workTotalEntity : workTotals) {
+			String[] splitStrings;
+
+			if (workTotalEntity == null) {
+				splitStrings = "00:00".split(":");
+			} else {
+				splitStrings = workTotalEntity.getWork_total().split(":");
 			}
-			
+
+			int getHour = Integer.valueOf(splitStrings[0]);
+			int getMinute = Integer.valueOf(splitStrings[1]);
+			hour += getHour;
+			minute += getMinute;
 		}
 
 		int getHourFromMinute = minute / 60;
