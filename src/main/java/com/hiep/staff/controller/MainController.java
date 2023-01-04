@@ -159,6 +159,13 @@ public class MainController {
 		accountsModel.setUpdate_at(dateUpdate);
 		accountsMapper.updatePassword(accountsModel);
 	}
+	
+	@PostMapping("admin-login")
+	public List<AccountsEntity> adminLogin() {
+		List<AccountsEntity> result = accountsMapper.adminLogin();
+		log.info("result:{}", result);
+		return result;
+	}
 
 	/**
 	 ** 

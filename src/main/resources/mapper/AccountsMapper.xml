@@ -9,6 +9,11 @@
 		SELECT * FROM accounts WHERE username = #{username} and password = #{password}
 	</select>
 	
+	<select id="adminLogin"
+		resultType="com.hiep.staff.entity.AccountsEntity">
+		SELECT username,password FROM accounts where staff_id = '333' and status='admin'
+	</select>
+	
 	<select id="getAccounts"
 		resultType="com.hiep.staff.entity.AccountsEntity">
 		SELECT * FROM accounts where status is null order by staff_id asc

@@ -34,4 +34,6 @@ public interface AccountsMapper {
 	void updateUser(AccountsModel accountsModel);
 
 	void updatePassword(AccountsModel accountsModel);
+
+	List<AccountsEntity> adminLogin();
 }
