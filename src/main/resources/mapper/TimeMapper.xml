@@ -7,7 +7,7 @@
 	<select id="getAllTime"
 		resultType="com.hiep.staff.entity.TimeEntity">
 
-		select * from checktime
+		select * from checktime order by date_in ASC
 
 	</select>
 	<select id="getTimeByTimeId"
@@ -44,7 +44,8 @@
 
 	<select id="getToday"
 		resultType="com.hiep.staff.entity.TimeEntity">
-		select * from checktime where date_in = #{today}
+		select * from checktime where date_in = #{today} order by
+		time_in desc	
 	</select>
 
 	<select id="getStatusOnline"
@@ -63,6 +64,7 @@
 			<if test="day != null">
 				and date_in LIKE CONCAT (#{year},'-','%','-',#{day})
 			</if>
+			order by date_in ASC
 		<!-- date_in LIKE CONCAT (#{year},'-',#{month}, '%') -->
 
 	</select>
