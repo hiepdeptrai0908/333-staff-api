@@ -7,7 +7,7 @@
 	<select id="getAllTime"
 		resultType="com.hiep.staff.entity.TimeEntity">
 
-		select * from checktime order by date_in ASC
+		select * from checktime order by date_in desc
 
 	</select>
 	<select id="getTimeByTimeId"
