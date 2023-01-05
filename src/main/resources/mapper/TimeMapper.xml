@@ -6,7 +6,6 @@
 
 	<select id="getAllTime"
 		resultType="com.hiep.staff.entity.TimeEntity">
-
 		select * from checktime order by date_in desc
 
 	</select>
@@ -64,7 +63,8 @@
 			<if test="day != null">
 				and date_in LIKE CONCAT (#{year},'-','%','-',#{day})
 			</if>
-			order by date_in ASC
+			and status = 'offline'
+			order by date_in asc, time_in asc
 		<!-- date_in LIKE CONCAT (#{year},'-',#{month}, '%') -->
 
 	</select>

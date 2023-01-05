@@ -392,7 +392,6 @@ public class MainController {
 					int totalMinuteInt = minuteBreakTime1 + minuteBreakTime2;
 
 					if (totalMinuteInt >= 60) {
-						System.out.println("totalMinuteInt % 60:" + totalMinuteInt % 60);
 						totalMinuteInt = totalMinuteInt % 60;
 						++totalHourInt;
 					}
@@ -479,7 +478,6 @@ public class MainController {
 				message.setTitle(timeModel.getFullname() + " check out thành công.");
 				message.setStatus("success");
 				timeMapper.insertTimeOut(timeModel);
-				log.info("reusult checkBreakLast1ttttttt:{}", "ok");
 				return message;
 			}
 
@@ -551,7 +549,6 @@ public class MainController {
 			return message;
 		} else {
 			int checking = timeMapper.checking(timeModel.getStaff_id());
-			log.info("::::checking: {}", checking);
 			if (checking > 0) {
 				/***
 				 * 
@@ -758,7 +755,6 @@ public class MainController {
 	// search time by date
 	@PostMapping("/time/search")
 	public List<TimeEntity> searchTimeByDate(@RequestBody DateModel dateModel) {
-		log.info("dateModel:{}", dateModel);
 		List<TimeEntity> datas = timeMapper.searchTimeByDate(dateModel);
 		return datas;
 	}
@@ -835,8 +831,6 @@ public class MainController {
 	@PostMapping("total-month-time")
 	public WorkTotalEntity totalMonthTime(@RequestBody DateModel dateModel) {
 		List<WorkTotalEntity> workTotals = timeMapper.sumTime(dateModel);
-
-		log.info("workTotals:{}", workTotals);
 
 		int minute = 0;
 		int hour = 0;
