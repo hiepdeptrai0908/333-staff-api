@@ -73,5 +73,7 @@ public interface TimeMapper {
 
 	List<WorkTotalEntity> sumTime(DateModel dateModel);
 
+	List<WorkTotalEntity> totalMonthAll(DateModel dateModel);
+
 	
 }

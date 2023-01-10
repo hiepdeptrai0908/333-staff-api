@@ -201,6 +201,12 @@
 		FROM checktime where staff_id = #{staff_id} and 	
 		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
 	</select>
+	
+	<select id="totalMonthAll" resultType="com.hiep.staff.entity.WorkTotalEntity">
+		SELECT work_total
+		FROM checktime where 	
+		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
+	</select>
 
 	<update id="insertBreakIn2">
 		UPDATE checktime

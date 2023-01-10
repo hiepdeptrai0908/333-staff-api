@@ -861,6 +861,40 @@ public class MainController {
 								: Integer.toString(newMinute)));
 		return workTotalEntity;
 	}
+	
+	@PostMapping("total-month-all")
+	public WorkTotalEntity totalMonthAll(@RequestBody DateModel dateModel) {
+		List<WorkTotalEntity> workTotals = timeMapper.totalMonthAll(dateModel);
+
+		int minute = 0;
+		int hour = 0;
+		for (WorkTotalEntity workTotalEntity : workTotals) {
+			String[] splitStrings;
+
+			if (workTotalEntity == null) {
+				splitStrings = "00:00".split(":");
+			} else {
+				splitStrings = workTotalEntity.getWork_total().split(":");
+			}
+
+			int getHour = Integer.valueOf(splitStrings[0]);
+			int getMinute = Integer.valueOf(splitStrings[1]);
+			hour += getHour;
+			minute += getMinute;
+		}
+
+		int getHourFromMinute = minute / 60;
+		int newHour = hour + getHourFromMinute;
+		int newMinute = minute % 60;
+		WorkTotalEntity workTotalEntity = new WorkTotalEntity();
+		workTotalEntity.setHour(Integer.toString(newHour));
+		workTotalEntity.setMinute(Integer.toString(newMinute));
+		workTotalEntity.setWork_total(
+				(Integer.toString(newHour).length() < 2 ? "0" + Integer.toString(newHour) : Integer.toString(newHour))
+						+ ":" + (Integer.toString(newMinute).length() < 2 ? "0" + Integer.toString(newMinute)
+								: Integer.toString(newMinute)));
+		return workTotalEntity;
+	}
 
 	@GetMapping("example")
 	public void example(@RequestBody TimeModel timeModel) {
