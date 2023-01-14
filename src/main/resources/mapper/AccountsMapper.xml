@@ -11,7 +11,7 @@
 	
 	<select id="adminLogin"
 		resultType="com.hiep.staff.entity.AccountsEntity">
-		SELECT username,password FROM accounts where staff_id = '333' and status='admin'
+		SELECT username,password FROM accounts where staff_id = '333'
 	</select>
 	
 	<select id="getAccounts"
