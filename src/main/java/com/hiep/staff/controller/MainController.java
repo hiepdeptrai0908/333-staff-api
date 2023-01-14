@@ -268,7 +268,9 @@ public class MainController {
 	// 退勤
 	@PostMapping("time-out")
 	public MessageEntity timeOut(@RequestBody TimeModel timeModel) {
-
+		
+		
+		log.info("datas:{}",timeModel);
 		// Time
 		LocalTime localTime = LocalTime.now();
 		String hour = Integer.toString(localTime.getHour());
@@ -331,6 +333,9 @@ public class MainController {
 			String newMinuteWork = Long.toString(totalMinuteWork % 60);
 			if (newHourWork.length() < 2) {
 				newHourWork = '0' + newHourWork;
+			}
+			if (totalMinuteWork / 60 > 23) {
+				newHourWork = "23";
 			}
 
 			if (newMinuteWork.length() < 2) {
