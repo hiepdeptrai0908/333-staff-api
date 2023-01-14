@@ -279,10 +279,16 @@ public class MainController {
 		}
 
 		String minute = Integer.toString(localTime.getMinute());
-		if (minute.length() < 2) {
-			minute = '0' + minute;
+		
+		if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
+			minute = "00";
+		}else if(localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+			minute = "15";
+		}else if(localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+			minute = "30";
+		}else if(localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+			minute = "45";
 		}
-
 		// Date
 		LocalDate localDate = LocalDate.now();
 		String year = Integer.toString(localDate.getYear());
