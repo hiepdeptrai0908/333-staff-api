@@ -341,6 +341,7 @@ public class MainController {
 			}else if(localTime.getMinute() > 45 && localTime.getMinute() < 60) {
 				currentMinute = 45;
 			}
+			
 
 			LocalDateTime timeDB = LocalDateTime.of(dataYear, dataMonth, dataDay, dataHour, dataMinute);
 			LocalDateTime timeCurrent = LocalDateTime.of(nowYear, nowMonth, nowDay, currentHour, currentMinute);
