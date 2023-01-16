@@ -369,7 +369,7 @@ public class MainController {
 			timeModel.setWork_time(resultWorkTime);
 
 			// Nếu đến muộn mà còn check out sớm
-			if (dataHour == currentHour && currentMinute < dataMinute) {
+			if (dataHour == currentHour && localTime.getMinute() < dataMinute) {
 				MessageEntity message = new MessageEntity();
 				message.setTitle(
 						timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút nữa mới có thể check out !");
