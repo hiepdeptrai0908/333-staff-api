@@ -207,6 +207,7 @@ public class MainController {
 		int hourInt = localTime.getHour();
 		int minuteInt = localTime.getMinute();
 		
+		// custom minute
 		if (minuteInt > 0 && minuteInt < 15) {
 			minuteInt = 15;
 		} else if (minuteInt > 15 && minuteInt < 30) {
