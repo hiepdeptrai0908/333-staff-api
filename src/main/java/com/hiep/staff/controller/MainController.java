@@ -159,11 +159,10 @@ public class MainController {
 		accountsModel.setUpdate_at(dateUpdate);
 		accountsMapper.updatePassword(accountsModel);
 	}
-	
+
 	@PostMapping("admin-login")
 	public List<AccountsEntity> adminLogin() {
 		List<AccountsEntity> result = accountsMapper.adminLogin();
-		log.info("result:{}", result);
 		return result;
 	}
 
@@ -205,26 +204,33 @@ public class MainController {
 
 		// Time
 		LocalTime localTime = LocalTime.now();
-		String hour = Integer.toString(localTime.getHour());
+		int hourInt = localTime.getHour();
+		int minuteInt = localTime.getMinute();
+		
+		if (minuteInt > 0 && minuteInt < 15) {
+			minuteInt = 15;
+		} else if (minuteInt > 15 && minuteInt < 30) {
+			minuteInt = 30;
+		} else if (minuteInt > 30 && minuteInt < 45) {
+			minuteInt = 45;
+		} else if (minuteInt > 45 && minuteInt < 60) {
+			hourInt += 1;
+			if (hourInt > 23) {
+				hourInt = 0;
+			}
+
+			minuteInt = 0;
+		}
+		
+		String hour = Integer.toString(hourInt);
 		if (hour.length() < 2) {
 			hour = '0' + hour;
 		}
-		int customMinute = localTime.getMinute();
-		if (customMinute > 0 && customMinute < 15) {
-			customMinute = 15;
-		} else if (customMinute > 30 && customMinute < 45) {
-			customMinute = 45;
-		}
 
-		String minute = Integer.toString(customMinute);
+		String minute = Integer.toString(minuteInt);
 		if (minute.length() < 2) {
 			minute = '0' + minute;
 		}
-//		
-//		System.out.println("hour :" + hour);
-//		
-//		System.out.println("custome mimute :" + customMinute);
-//		System.out.println("mimute :" + minute);
 
 		// Date
 		LocalDate localDate = LocalDate.now();
@@ -268,9 +274,7 @@ public class MainController {
 	// 退勤
 	@PostMapping("time-out")
 	public MessageEntity timeOut(@RequestBody TimeModel timeModel) {
-		
-		
-		log.info("datas:{}",timeModel);
+
 		// Time
 		LocalTime localTime = LocalTime.now();
 		String minute = Integer.toString(localTime.getMinute());
@@ -278,19 +282,18 @@ public class MainController {
 		if (minute.length() < 2) {
 			minute = '0' + minute;
 		}
-		
+
 		if (hour.length() < 2) {
 			hour = '0' + hour;
 		}
 
-		
 		if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
 			minute = "00";
-		}else if(localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+		} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
 			minute = "15";
-		}else if(localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+		} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
 			minute = "30";
-		}else if(localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+		} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
 			minute = "45";
 		}
 		// Date
@@ -331,17 +334,16 @@ public class MainController {
 
 			int dataMinute = Integer.parseInt(splitTime[1]);
 			int currentMinute = localTime.getMinute();
-			
+
 			if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
 				currentMinute = 0;
-			}else if(localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+			} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
 				currentMinute = 15;
-			}else if(localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+			} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
 				currentMinute = 30;
-			}else if(localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+			} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
 				currentMinute = 45;
 			}
-			
 
 			LocalDateTime timeDB = LocalDateTime.of(dataYear, dataMonth, dataDay, dataHour, dataMinute);
 			LocalDateTime timeCurrent = LocalDateTime.of(nowYear, nowMonth, nowDay, currentHour, currentMinute);
@@ -355,21 +357,23 @@ public class MainController {
 			if (newHourWork.length() < 2) {
 				newHourWork = '0' + newHourWork;
 			}
-			if (totalMinuteWork / 60 > 23) {
-				newHourWork = "23";
-			}
 
 			if (newMinuteWork.length() < 2) {
 				newMinuteWork = '0' + newMinuteWork;
 			}
 
+			if (totalMinuteWork / 60 > 23) {
+				newHourWork = "00";
+				newMinuteWork = "00";
+			}
+			
 			String resultWorkTime = newHourWork + ":" + newMinuteWork;
 
 			// set work time
 			timeModel.setWork_time(resultWorkTime);
 
 			// Nếu đến muộn mà còn check out sớm
-			if (dataHour == currentHour && localTime.getMinute() < dataMinute) {
+			if (currentHour == dataHour && localTime.getMinute() < dataMinute) {
 				MessageEntity message = new MessageEntity();
 				message.setTitle(
 						timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút nữa mới có thể check out !");
@@ -530,11 +534,22 @@ public class MainController {
 		// Time
 		LocalTime localTime = LocalTime.now();
 		String hour = Integer.toString(localTime.getHour());
+
 		if (hour.length() < 2) {
 			hour = '0' + hour;
 		}
 
 		String minute = Integer.toString(localTime.getMinute());
+		if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
+			minute = "00";
+		} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+			minute = "15";
+		} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+			minute = "30";
+		} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+			minute = "45";
+		}
+
 		if (minute.length() < 2) {
 			minute = '0' + minute;
 		}
@@ -621,12 +636,29 @@ public class MainController {
 
 		// Time
 		LocalTime localTime = LocalTime.now();
-		String hour = Integer.toString(localTime.getHour());
+		int hourInt = localTime.getHour();
+		int minuteInt = localTime.getMinute();
+		if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
+			minuteInt = 15;
+		} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+			minuteInt = 30;
+		} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+			minuteInt = 45;
+		} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+			hourInt += 1;
+			if (hourInt > 23) {
+				hourInt = 0;
+			}
+
+			minuteInt = 00;
+		}
+
+		String hour = Integer.toString(hourInt);
 		if (hour.length() < 2) {
 			hour = '0' + hour;
 		}
 
-		String minute = Integer.toString(localTime.getMinute());
+		String minute = Integer.toString(minuteInt);
 		if (minute.length() < 2) {
 			minute = '0' + minute;
 		}
@@ -640,10 +672,10 @@ public class MainController {
 			String getTimeBreakOneDay1 = timeMapper.getTimeBreakOneDay1(timeModel.getStaff_id());
 			String[] splitTime1 = getTimeBreakOneDay1.split(":");
 			int dataHour1 = Integer.parseInt(splitTime1[0]);
-			int currentHour1 = localTime.getHour();
+			int currentHour1 = hourInt;
 
 			int dataMinute1 = Integer.parseInt(splitTime1[1]);
-			int currentMinute1 = localTime.getMinute();
+			int currentMinute1 = minuteInt;
 
 			LocalTime hourDB1 = LocalTime.of(dataHour1, dataMinute1);
 			LocalTime hourPresen1 = LocalTime.of(currentHour1, currentMinute1);
@@ -684,10 +716,10 @@ public class MainController {
 					System.out.println("break_in2:" + getTimeBreakOneDay2);
 					String[] splitTime2 = getTimeBreakOneDay2.split(":");
 					int dataHour2 = Integer.parseInt(splitTime2[0]);
-					int currentHour2 = localTime.getHour();
+					int currentHour2 = hourInt;
 
 					int dataMinute2 = Integer.parseInt(splitTime2[1]);
-					int currentMinute2 = localTime.getMinute();
+					int currentMinute2 = minuteInt;
 
 					LocalTime hourDB2 = LocalTime.of(dataHour2, dataMinute2);
 					LocalTime hourPresen2 = LocalTime.of(currentHour2, currentMinute2);
@@ -887,7 +919,7 @@ public class MainController {
 								: Integer.toString(newMinute)));
 		return workTotalEntity;
 	}
-	
+
 	@PostMapping("total-month-all")
 	public WorkTotalEntity totalMonthAll(@RequestBody DateModel dateModel) {
 		List<WorkTotalEntity> workTotals = timeMapper.totalMonthAll(dateModel);
