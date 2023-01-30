@@ -370,8 +370,8 @@ public class MainController {
 			// set work time
 			timeModel.setWork_time(resultWorkTime);
 
-			// Nếu đến muộn mà còn check out sớm
-			if (currentHour == dataHour && localTime.getMinute() < dataMinute) {
+			// Nếu check out sớm
+			if (currentHour == dataHour && currentMinute < dataMinute || currentHour + 1 == dataHour && currentMinute > 45) {
 				MessageEntity message = new MessageEntity();
 				message.setTitle(
 						timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ " +Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! " );
