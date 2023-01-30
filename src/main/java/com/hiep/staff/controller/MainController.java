@@ -1,15 +1,12 @@
 package com.hiep.staff.controller;
 
-import java.sql.Array;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.TinyBitSet;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -363,7 +360,7 @@ public class MainController {
 				newMinuteWork = '0' + newMinuteWork;
 			}
 
-			if (totalMinuteWork / 60 > 23) {
+			if (totalMinuteWork / 60 > 23 || totalMinuteWork / 60 < 0 || totalMinuteWork % 60 > 59 || totalMinuteWork % 60 < 0) {
 				newHourWork = "00";
 				newMinuteWork = "00";
 			}
@@ -377,7 +374,7 @@ public class MainController {
 			if (currentHour == dataHour && localTime.getMinute() < dataMinute) {
 				MessageEntity message = new MessageEntity();
 				message.setTitle(
-						timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút nữa mới có thể check out !");
+						timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ " +Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! " );
 				message.setStatus("warning");
 				return message;
 			}
@@ -448,6 +445,11 @@ public class MainController {
 					/**
 					 * work total = work_time - break_time
 					 */
+					
+					if (totalHourInt > 23 || totalHourInt < 0 || totalMinuteInt > 59 || totalMinuteInt < 0) {
+						totalHourInt = 0;
+						totalMinuteInt = 0;
+					}
 
 					LocalTime breakTime = LocalTime.of(totalHourInt, totalMinuteInt);
 					LocalTime workTime = LocalTime.of(Integer.valueOf(newHourWork), Integer.valueOf(newMinuteWork));
@@ -467,6 +469,10 @@ public class MainController {
 					}
 
 					String resultWorkTotal = newHourWorkMinusBreak + ":" + newMinuteWorkMinusBreak;
+					if (totalHourInt > 23 || totalHourInt < 0 || totalMinuteInt > 59 || totalMinuteInt < 0) {
+						
+						resultWorkTotal = "00:00";
+					}
 
 					timeModel.setWork_total(resultWorkTotal);
 					// end
@@ -606,7 +612,7 @@ public class MainController {
 				if (dataHour == currentHour && currentMinute < dataMinute) {
 					MessageEntity message = new MessageEntity();
 					message.setTitle(
-							timeModel.getFullname() + " đến muộn, cần đợi thêm vài phút mới có thể giải lao !");
+							timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ " +Integer.toString(dataMinute) + " phút trở đi mới có thể nghỉ giải lao ! " );
 					message.setStatus("warning");
 					return message;
 				}
@@ -702,6 +708,7 @@ public class MainController {
 			timeModel.setBreak_time1(resultBreakTime1);
 
 			timeModel.setBreak_out1(hour + ":" + minute);
+			
 
 			// kiêmt tra đã thoát giải lao lần 1 hay chưa
 			int checkHasBreakTime1 = timeMapper.checkHasBreakTime1(timeModel.getStaff_id());
@@ -714,7 +721,6 @@ public class MainController {
 					// caculate time break time 2
 					// start
 					String getTimeBreakOneDay2 = timeMapper.getTimeBreakOneDay2(timeModel.getStaff_id());
-					System.out.println("break_in2:" + getTimeBreakOneDay2);
 					String[] splitTime2 = getTimeBreakOneDay2.split(":");
 					int dataHour2 = Integer.parseInt(splitTime2[0]);
 					int currentHour2 = hourInt;
