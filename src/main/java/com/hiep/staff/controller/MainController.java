@@ -371,7 +371,8 @@ public class MainController {
 			timeModel.setWork_time(resultWorkTime);
 
 			// Nếu check out sớm
-			if (currentHour == dataHour && currentMinute < dataMinute || currentHour + 1 == dataHour && currentMinute > 45) {
+			if (currentHour == dataHour && currentMinute < dataMinute || 
+					dataHour - 1  == currentHour && dataMinute < 15 &&  currentMinute > 45) {
 				MessageEntity message = new MessageEntity();
 				message.setTitle(
 						timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ " +Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! " );
