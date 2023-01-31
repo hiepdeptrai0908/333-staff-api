@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.SalaryMapper">
+
+	<select id="getSalarySetting"
+		resultType="com.hiep.staff.entity.SalarySetting">
+		select * from salary_setting order by date_in desc
+
+	</select>
+	
+
+</mapper>

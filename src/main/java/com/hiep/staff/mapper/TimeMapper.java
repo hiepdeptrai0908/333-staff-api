@@ -1,6 +1,5 @@
 package com.hiep.staff.mapper;
 
-import java.sql.Array;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
