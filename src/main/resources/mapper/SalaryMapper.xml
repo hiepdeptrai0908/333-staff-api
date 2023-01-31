@@ -4,11 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hiep.staff.mapper.SalaryMapper">
 
-	<select id="getSalarySetting"
+	<select id="getSetting"
 		resultType="com.hiep.staff.entity.SalarySetting">
-		select * from salary_setting order by date_in desc
-
+		select * from salary_setting
 	</select>
+	
+	<update id="updateSetting">
+		UPDATE salary_setting
+		SET
+		basic_salary = #{basic_salary},
+		up_salary = #{up_salary}
+		WHERE
+		salary_id = 1
+	</update>
 	
 
 </mapper>

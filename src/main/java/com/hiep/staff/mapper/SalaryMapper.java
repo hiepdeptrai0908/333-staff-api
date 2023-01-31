@@ -9,5 +9,7 @@ import com.hiep.staff.entity.SalarySetting;
 @Mapper
 public interface SalaryMapper {
 
-	List<SalarySetting> getSalarySetting();
+	List<SalarySetting> getSetting();
+
+	int updateSetting(SalarySetting salarySetting);
 }
