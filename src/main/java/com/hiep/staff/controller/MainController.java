@@ -201,9 +201,17 @@ public class MainController {
 
 		// Time
 		LocalTime localTime = LocalTime.now();
+//		LocalTime localTime = LocalTime.of(23, 46,30);
 		int hourInt = localTime.getHour();
 		int minuteInt = localTime.getMinute();
-		
+
+		// Date
+		LocalDate localDate = LocalDate.now();
+//		LocalDate localDate = LocalDate.of(2023, 2, 9);
+		String year = Integer.toString(localDate.getYear());
+		String month = Integer.toString(localDate.getMonthValue());
+		String day = Integer.toString(localDate.getDayOfMonth());
+
 		// custom minute
 		if (minuteInt > 0 && minuteInt < 15) {
 			minuteInt = 15;
@@ -214,12 +222,13 @@ public class MainController {
 		} else if (minuteInt > 45 && minuteInt < 60) {
 			hourInt += 1;
 			if (hourInt > 23) {
+				day = Integer.toString(localDate.getDayOfMonth() + 1);
 				hourInt = 0;
 			}
 
 			minuteInt = 0;
 		}
-		
+
 		String hour = Integer.toString(hourInt);
 		if (hour.length() < 2) {
 			hour = '0' + hour;
@@ -230,11 +239,6 @@ public class MainController {
 			minute = '0' + minute;
 		}
 
-		// Date
-		LocalDate localDate = LocalDate.now();
-		String year = Integer.toString(localDate.getYear());
-		String month = Integer.toString(localDate.getMonthValue());
-		String day = Integer.toString(localDate.getDayOfMonth());
 		if (year.length() < 2) {
 			year = '0' + year;
 		}
@@ -360,22 +364,23 @@ public class MainController {
 				newMinuteWork = '0' + newMinuteWork;
 			}
 
-			if (totalMinuteWork / 60 > 23 || totalMinuteWork / 60 < 0 || totalMinuteWork % 60 > 59 || totalMinuteWork % 60 < 0) {
+			if (totalMinuteWork / 60 > 23 || totalMinuteWork / 60 < 0 || totalMinuteWork % 60 > 59
+					|| totalMinuteWork % 60 < 0) {
 				newHourWork = "00";
 				newMinuteWork = "00";
 			}
-			
+
 			String resultWorkTime = newHourWork + ":" + newMinuteWork;
 
 			// set work time
 			timeModel.setWork_time(resultWorkTime);
 
 			// Nếu check out sớm
-			if (currentHour == dataHour && currentMinute < dataMinute || 
-					dataHour - 1  == currentHour && dataMinute < 15 &&  currentMinute > 45) {
+			if (currentHour == dataHour && currentMinute < dataMinute
+					|| dataHour - 1 == currentHour && dataMinute < 15 && currentMinute > 45) {
 				MessageEntity message = new MessageEntity();
-				message.setTitle(
-						timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ " +Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! " );
+				message.setTitle(timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ "
+						+ Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! ");
 				message.setStatus("warning");
 				return message;
 			}
@@ -446,7 +451,7 @@ public class MainController {
 					/**
 					 * work total = work_time - break_time
 					 */
-					
+
 					if (totalHourInt > 23 || totalHourInt < 0 || totalMinuteInt > 59 || totalMinuteInt < 0) {
 						totalHourInt = 0;
 						totalMinuteInt = 0;
@@ -471,7 +476,7 @@ public class MainController {
 
 					String resultWorkTotal = newHourWorkMinusBreak + ":" + newMinuteWorkMinusBreak;
 					if (totalHourInt > 23 || totalHourInt < 0 || totalMinuteInt > 59 || totalMinuteInt < 0) {
-						
+
 						resultWorkTotal = "00:00";
 					}
 
@@ -612,8 +617,8 @@ public class MainController {
 				int currentMinute = localTime.getMinute();
 				if (dataHour == currentHour && currentMinute < dataMinute) {
 					MessageEntity message = new MessageEntity();
-					message.setTitle(
-							timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ " +Integer.toString(dataMinute) + " phút trở đi mới có thể nghỉ giải lao ! " );
+					message.setTitle(timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ "
+							+ Integer.toString(dataMinute) + " phút trở đi mới có thể nghỉ giải lao ! ");
 					message.setStatus("warning");
 					return message;
 				}
@@ -709,7 +714,6 @@ public class MainController {
 			timeModel.setBreak_time1(resultBreakTime1);
 
 			timeModel.setBreak_out1(hour + ":" + minute);
-			
 
 			// kiêmt tra đã thoát giải lao lần 1 hay chưa
 			int checkHasBreakTime1 = timeMapper.checkHasBreakTime1(timeModel.getStaff_id());
