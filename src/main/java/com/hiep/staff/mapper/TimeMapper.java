@@ -69,6 +69,8 @@ public interface TimeMapper {
 	void deleteTime(Number id);
 
 	List<TimeEntity> searchTimeUser(DateModel dateModel);
+	
+	int searchTotalDayUser(DateModel dateModel);
 
 	List<WorkTotalEntity> sumTime(DateModel dateModel);
 

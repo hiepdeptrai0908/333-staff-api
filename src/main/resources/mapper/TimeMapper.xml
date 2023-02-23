@@ -26,13 +26,14 @@
 
 
 	<select id="getTimeDay" resultType="String">
-		select time_in,date_in from checktime
+		select time_in,date_in from
+		checktime
 		where
 		staff_id = #{staff_id} and
 		time_in is not null and
 		time_out is null
 	</select>
-	
+
 	<select id="getDateDay" resultType="String">
 		select date_in from checktime
 		where
@@ -44,27 +45,27 @@
 	<select id="getToday"
 		resultType="com.hiep.staff.entity.TimeEntity">
 		select * from checktime where date_in = #{today} order by
-		time_in desc	
+		time_in desc
 	</select>
 
 	<select id="getStatusOnline"
 		resultType="com.hiep.staff.entity.TimeEntity">
 		select * from checktime where status = 'online' order by
-		time_in desc	
+		time_in desc
 	</select>
 
 	<select id="searchTimeByDate"
 		resultType="com.hiep.staff.entity.TimeEntity">
 		select * from checktime where date_in LIKE CONCAT (#{year}, '%')
-			
-			<if test="month != null">
-				and date_in LIKE CONCAT (#{year},'-',#{month}, '%')
-			</if>
-			<if test="day != null">
-				and date_in LIKE CONCAT (#{year},'-','%','-',#{day})
-			</if>
-			and status = 'offline'
-			order by date_in asc, time_in asc
+
+		<if test="month != null">
+			and date_in LIKE CONCAT (#{year},'-',#{month}, '%')
+		</if>
+		<if test="day != null">
+			and date_in LIKE CONCAT (#{year},'-','%','-',#{day})
+		</if>
+		and status = 'offline'
+		order by date_in asc, time_in asc
 		<!-- date_in LIKE CONCAT (#{year},'-',#{month}, '%') -->
 
 	</select>
@@ -190,21 +191,32 @@
 		null and
 		break_time2 is not null
 	</select>
-	
-	<select id="searchTimeUser" resultType="com.hiep.staff.entity.TimeEntity">
-		select * from checktime where staff_id = #{staff_id} and 
+
+	<select id="searchTimeUser"
+		resultType="com.hiep.staff.entity.TimeEntity">
+		select * from checktime where staff_id = #{staff_id} and
+		date_in LIKE CONCAT (#{year},'-',#{month}, '%') and time_out is not null order by date_in ASC
+	</select>
+
+	<select id="searchTotalDayUser" resultType="int">
+		select count(*) from
+		checktime where staff_id = #{staff_id} and
+		date_in LIKE CONCAT (#{year},'-',#{month}, '%')
+
+	</select>
+
+	<select id="sumTime"
+		resultType="com.hiep.staff.entity.WorkTotalEntity">
+		SELECT work_total
+		FROM checktime where staff_id =
+		#{staff_id} and
 		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
 	</select>
-	
-	<select id="sumTime" resultType="com.hiep.staff.entity.WorkTotalEntity">
+
+	<select id="totalMonthAll"
+		resultType="com.hiep.staff.entity.WorkTotalEntity">
 		SELECT work_total
-		FROM checktime where staff_id = #{staff_id} and 	
-		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
-	</select>
-	
-	<select id="totalMonthAll" resultType="com.hiep.staff.entity.WorkTotalEntity">
-		SELECT work_total
-		FROM checktime where 	
+		FROM checktime where
 		date_in LIKE CONCAT (#{year},'-',#{month}, '%') order by date_in ASC
 	</select>
 
@@ -252,64 +264,74 @@
 		and
 		break_time1 is not null
 	</select>
-	
+
 	<!-- update time -->
 	<select id="checkIsChangeBreakTotal" resultType="int">
-		select count(break_total)
+		select
+		count(break_total)
 		from checktime where
 		time_id = #{time_id} and
 		break_total = #{break_total}
 	</select>
-	
+
 	<update id="updateWhenIsChangeBreakTotal">
 		UPDATE checktime
 		SET
 		staff_id = #{staff_id},
-		fullname = #{fullname},
+		fullname =
+		#{fullname},
 		time_in = #{time_in},
 		time_out = #{time_out},
-		date_in = #{date_in},
+		date_in =
+		#{date_in},
 		date_out = #{date_out},
 		break_in1 = null,
 		break_out1 = null,
 		break_time1 = null,
 		break_in2 = null,
 		break_out2 = null,
-		break_time2 = null,
+		break_time2 =
+		null,
 		break_total = #{break_total},
 		work_time = #{work_time},
-		work_total = #{work_total},
+		work_total
+		= #{work_total},
 		update_time = #{update_time},
-		update_date = #{update_date},
+		update_date =
+		#{update_date},
 		update_user = #{update_user},
 		status = #{status}
 		WHERE
 		time_id = #{time_id}
 	</update>
-	
+
 	<update id="updateWhenNotChangeBreakTotal">
 		UPDATE checktime
 		SET
 		staff_id = #{staff_id},
-		fullname = #{fullname},
+		fullname =
+		#{fullname},
 		time_in = #{time_in},
 		time_out = #{time_out},
-		date_in = #{date_in},
+		date_in =
+		#{date_in},
 		date_out = #{date_out},
 		work_time = #{work_time},
-		work_total = #{work_total},
+		work_total
+		= #{work_total},
 		update_time = #{update_time},
-		update_date = #{update_date},
+		update_date =
+		#{update_date},
 		update_user = #{update_user},
 		status = #{status}
 		WHERE
 		time_id = #{time_id}
 	</update>
-	
+
 	<delete id="deleteTime">
 		delete from checktime where
 		time_id = #{id}
 	</delete>
-	
+
 
 </mapper>
