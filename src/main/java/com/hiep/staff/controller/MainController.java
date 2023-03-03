@@ -279,6 +279,7 @@ public class MainController {
 
 		// Time
 		LocalTime localTime = LocalTime.now();
+//		LocalTime localTime = LocalTime.of(11, 35,30);
 		String minute = Integer.toString(localTime.getMinute());
 		String hour = Integer.toString(localTime.getHour());
 		if (minute.length() < 2) {
@@ -378,11 +379,13 @@ public class MainController {
 			// Nếu check out sớm
 			if (currentHour == dataHour && currentMinute < dataMinute
 					|| dataHour - 1 == currentHour && dataMinute < 15 && currentMinute > 45) {
-				MessageEntity message = new MessageEntity();
-				message.setTitle(timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ "
-						+ Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! ");
-				message.setStatus("warning");
-				return message;
+				if(Integer.valueOf(day).equals(dataDay)) {
+					MessageEntity message = new MessageEntity();
+					message.setTitle(timeModel.getFullname() + ": Từ " + Integer.toString(dataHour) + " giờ "
+							+ Integer.toString(dataMinute) + " phút trở đi mới có thể check out ! ");
+					message.setStatus("warning");
+					return message;
+				}
 			}
 
 			timeModel.setTime_out(hour + ":" + minute);
@@ -475,12 +478,14 @@ public class MainController {
 					}
 
 					String resultWorkTotal = newHourWorkMinusBreak + ":" + newMinuteWorkMinusBreak;
-					if (totalHourInt > 23 || totalHourInt < 0 || totalMinuteInt > 59 || totalMinuteInt < 0) {
-
+					
+					if (minWorkMinusBreak / 60 > 23 || minWorkMinusBreak / 60 < 0 || minWorkMinusBreak % 60 > 59 || minWorkMinusBreak % 60 < 0) {
+						timeModel.setWork_total(resultWorkTotal);
 						resultWorkTotal = "00:00";
 					}
 
 					timeModel.setWork_total(resultWorkTotal);
+					
 					// end
 
 					// kiểm tra đã vào giải lao lần 2 hay chưa
