@@ -130,39 +130,41 @@ public class SalaryController {
 			int minuteUp = 0;
 			for(TimeEntity timeEntity: getTimeOfUser) {
 				String[] timeSplited = timeEntity.getTime_out().split(":");
-				int resultHourUp = Integer.valueOf(timeSplited[0]) - 22;
-				int resultMinuteUp = Integer.valueOf(timeSplited[1]);
-				hourUp += resultHourUp;
-				minuteUp += resultMinuteUp;
+				if(Integer.valueOf(timeSplited[0]) >= 22) {
+					int resultHourUp = Integer.valueOf(timeSplited[0]) - 22;
+					int resultMinuteUp = Integer.valueOf(timeSplited[1]);
+					hourUp += resultHourUp;
+					minuteUp += resultMinuteUp;
+				}
 			}
 			
-			int getHourUpFromMinute = minute / 60;
+			int getHourUpFromMinute = minuteUp / 60;
 			int newHourUp = hourUp + getHourUpFromMinute;
 			int newMinuteUp = minuteUp % 60;
 			
 			// thời gian tăng ca
 			String resultTotalTimeUp = (newHourUp < 10 ? '0' + String.valueOf(newHourUp) : String.valueOf(newHourUp))  + ":" + (newMinuteUp < 10 ? '0' + String.valueOf(newMinuteUp) : String.valueOf(newMinuteUp) );
-			
+
 			// thời gian bình thường (không tăng ca)
 			int totalHourTimes = Integer.valueOf(totalTimes.split(":")[0]);
 			int totalMinuteTimes = Integer.valueOf(totalTimes.split(":")[1]);
-			if(totalMinuteTimes == 0 && totalHourTimes > 0) {
-				totalHourTimes -= 1;
-				totalMinuteTimes = 60;
-			}
-			int regularHour = totalHourTimes - newHourUp;
-			int regularMinute = totalMinuteTimes - newMinuteUp;
 			
-			int getRegularHourFromMinute = regularMinute / 60;
-			int newRegularHour = regularHour + getRegularHourFromMinute;
-			int newRegularMinute = regularMinute % 60;
-			String resultRegularTime = (newRegularHour < 10 ? '0' + String.valueOf(newRegularHour) : String.valueOf(newRegularHour))  + ":" + (newRegularMinute < 10 ? '0' + String.valueOf(newRegularMinute) : String.valueOf(newRegularMinute) );
+			int regularHour = totalHourTimes - newHourUp;
+			int regularMinute = 0;
+			if(totalMinuteTimes <= newMinuteUp) {
+				regularMinute = (totalMinuteTimes + 60) - newMinuteUp;
+				regularHour -= 1;
+			}else if(totalMinuteTimes >= newMinuteUp) {
+				regularMinute = totalMinuteTimes - newMinuteUp;
+			}
+			
+			String resultRegularTime = (regularHour < 10 ? '0' + String.valueOf(regularHour) : String.valueOf(regularHour))  + ":" + (regularMinute < 10 ? '0' + String.valueOf(regularMinute) : String.valueOf(regularMinute) );
 			
 			// Tính tổng lương
 			int luong_co_ban = getSalarySetting.get(0).getBasic_salary();
 			int luong_tang_ca = getSalarySetting.get(0).getUp_salary();
-			int gio_thuong = newRegularHour;
-			int phut_thuong = newRegularMinute;
+			int gio_thuong = regularHour;
+			int phut_thuong = regularMinute;
 			int gio_tang_ca = newHourUp;
 			int phut_tang_ca = newMinuteUp;
 			int tien_ho_tro = getAllowanceEntities.get(0).getAllowance();
