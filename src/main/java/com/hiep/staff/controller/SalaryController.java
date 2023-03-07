@@ -174,7 +174,7 @@ public class SalaryController {
 			int luong_gio_tang_ca = gio_tang_ca * luong_tang_ca;
 			int luong_phut_tang_ca = phut_tang_ca * (luong_tang_ca / 60);
 			
-			int salary = luong_gio_thuong + luong_phut_thuong + luong_gio_tang_ca + luong_phut_tang_ca;
+			int salary = luong_gio_thuong + luong_phut_thuong + luong_gio_tang_ca + luong_phut_tang_ca + tien_ho_tro;
 			
 			
 			// Ngày hôm nay
