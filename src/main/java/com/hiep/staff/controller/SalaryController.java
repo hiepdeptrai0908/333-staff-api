@@ -195,7 +195,8 @@ public class SalaryController {
 				saralyEntity.setTotal_times_up("00:00");
 				saralyEntity.setAllowance(0);
 				saralyEntity.setSalary(0);
-				saralyEntity.setCreate_at(today);	
+				saralyEntity.setCreate_at(today);
+				
 			}else {
 				saralyEntity.setFullname(searchAccountByStaffId.get(0).getFullname());
 				saralyEntity.setStaff_id(searchSalaryModel.getStaff_id());
