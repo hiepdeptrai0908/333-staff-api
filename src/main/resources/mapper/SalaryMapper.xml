@@ -4,16 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hiep.staff.mapper.SalaryMapper">
 
-	<select id="getSetting"
-		resultType="com.hiep.staff.entity.SalarySetting">
-		select * from salary_setting
-	</select>
-
-	<select id="getAllowance"
-		resultType="com.hiep.staff.entity.AllowanceEntity">
-		select * from allowance where staff_id = #{staff_id}
-	</select>
-
 	<select id="getSalaryUser"
 		resultType="com.hiep.staff.entity.SalaryEntity">
 		select * from salary where staff_id = #{staff_id} and
@@ -27,7 +17,7 @@
 	</select>
 
 	<select id="getTimeOfUserByMonthYear"
-		resultType="com.hiep.staff.entity.AllowanceEntity">
+		resultType="com.hiep.staff.entity.AccountsEntity">
 		select * from salary where staff_id = #{staff_id} and
 		salary_date = #{yearMonth}
 	</select>
@@ -76,16 +66,6 @@
 		#{status}
 		)
 	</insert>
-
-	<update id="updateSetting">
-		UPDATE salary_setting
-		SET
-		basic_salary =
-		#{basic_salary},
-		up_salary = #{up_salary}
-		WHERE
-		salary_id = 1
-	</update>
 	
 	<delete id="deleteSalaryUser">
 		delete from salary where

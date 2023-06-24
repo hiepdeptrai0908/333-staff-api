@@ -31,6 +31,10 @@ public class AccountsEntity {
 	private String phone_number;
 	
 	private String address;
+	
+	private int money_support;
+	
+	private int basic_salary;
 
 	private String create_at;
 	private String create_user;

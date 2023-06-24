@@ -2,29 +2,22 @@ package com.hiep.staff.controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hiep.staff.entity.AccountsEntity;
-import com.hiep.staff.entity.AllowanceEntity;
-import com.hiep.staff.entity.MessageEntity;
 import com.hiep.staff.entity.SalaryEntity;
-import com.hiep.staff.entity.SalarySetting;
 import com.hiep.staff.entity.TimeEntity;
 import com.hiep.staff.entity.WorkTotalEntity;
 import com.hiep.staff.mapper.AccountsMapper;
 import com.hiep.staff.mapper.SalaryMapper;
 import com.hiep.staff.mapper.TimeMapper;
-import com.hiep.staff.model.AccountsModel;
 import com.hiep.staff.model.DateModel;
 import com.hiep.staff.model.SearchSalaryModel;
 
@@ -45,21 +38,6 @@ public class SalaryController {
 	@Autowired
 	TimeMapper timeMapper;
 
-	@GetMapping("get-setting")
-	public List<SalarySetting> getSalarySettings() {
-		List<SalarySetting> datas = salaryMapper.getSetting();
-		return datas;
-	}
-
-	@PostMapping("update-setting")
-	public MessageEntity updateSetting(@RequestBody SalarySetting salarySetting) {
-		salaryMapper.updateSetting(salarySetting);
-		MessageEntity messageEntity = new MessageEntity();
-		messageEntity.setTitle("Cập nhập lương thành công.");
-		messageEntity.setStatus("success");
-		return messageEntity;
-	}
-
 	@PostMapping("get-salary-user")
 	public List<SalaryEntity> getSalaryUser(@RequestBody SearchSalaryModel searchSalaryModel) {
 		String yearMonth = searchSalaryModel.getYear() + "-" + searchSalaryModel.getMonth();
@@ -76,14 +54,7 @@ public class SalaryController {
 			// lấy ra tài khoản có Staff id tương ứng
 			List<AccountsEntity> searchAccountByStaffId = accountsMapper
 					.searchAccountByStaffId(searchSalaryModel.getStaff_id());
-
-			// Lấy ra mức lương
-			List<SalarySetting> getSalarySetting = salaryMapper.getSetting();
-
-			// Lấy ra tiền hỗ trợ đi lại
-			List<AllowanceEntity> getAllowanceEntities = salaryMapper.getAllowance(searchSalaryModel.getStaff_id());
 			
-
 			// Lấy ra toàn bộ thời gian trong tháng
 			DateModel dateModel = new DateModel();
 			dateModel.setMonth(searchSalaryModel.getMonth());
@@ -144,7 +115,6 @@ public class SalaryController {
 			
 			// thời gian tăng ca
 			String resultTotalTimeUp = (newHourUp < 10 ? '0' + String.valueOf(newHourUp) : String.valueOf(newHourUp))  + ":" + (newMinuteUp < 10 ? '0' + String.valueOf(newMinuteUp) : String.valueOf(newMinuteUp) );
-
 			// thời gian bình thường (không tăng ca)
 			int totalHourTimes = Integer.valueOf(totalTimes.split(":")[0]);
 			int totalMinuteTimes = Integer.valueOf(totalTimes.split(":")[1]);
@@ -161,14 +131,13 @@ public class SalaryController {
 			String resultRegularTime = (regularHour < 10 ? '0' + String.valueOf(regularHour) : String.valueOf(regularHour))  + ":" + (regularMinute < 10 ? '0' + String.valueOf(regularMinute) : String.valueOf(regularMinute) );
 			
 			// Tính tổng lương
-			int luong_co_ban = getSalarySetting.get(0).getBasic_salary();
-			int luong_tang_ca = getSalarySetting.get(0).getUp_salary();
+			int luong_co_ban = searchAccountByStaffId.get(0).getBasic_salary();
+			int luong_tang_ca = (int)(luong_co_ban * 1.25);
 			int gio_thuong = regularHour;
 			int phut_thuong = regularMinute;
 			int gio_tang_ca = newHourUp;
 			int phut_tang_ca = newMinuteUp;
-			int tien_ho_tro = getAllowanceEntities.get(0).getAllowance();
-			
+			int tien_ho_tro = searchAccountByStaffId.get(0).getMoney_support();
 			int luong_gio_thuong = gio_thuong * luong_co_ban;
 			int luong_phut_thuong = phut_thuong * (luong_co_ban / 60);
 			int luong_gio_tang_ca = gio_tang_ca * luong_tang_ca;
@@ -211,19 +180,36 @@ public class SalaryController {
 			 * Kết quả
 			 * 
 			 **/
+
 			SalaryEntity saralyEntity = new SalaryEntity();
-			saralyEntity.setFullname(searchAccountByStaffId.get(0).getFullname());
-			saralyEntity.setStaff_id(searchSalaryModel.getStaff_id());
-			saralyEntity.setSalary_date(yearMonth);
-			saralyEntity.setBasic_salary(Integer.toString(getSalarySetting.get(0).getBasic_salary()));
-			saralyEntity.setUp_salary(Integer.toString(getSalarySetting.get(0).getUp_salary()));
-			saralyEntity.setTotal_days(totalDayOfUser);
-			saralyEntity.setTotal_times(totalTimes);
-			saralyEntity.setRegular_time(resultRegularTime);
-			saralyEntity.setTotal_times_up(resultTotalTimeUp);
-			saralyEntity.setAllowance(getAllowanceEntities.get(0).getAllowance());
-			saralyEntity.setSalary(salary);
-			saralyEntity.setCreate_at(today);	
+			// Nếu không có dữ liệu (khônglàm ngày nào)
+			if (totalDayOfUser == 0) {
+				saralyEntity.setFullname(searchAccountByStaffId.get(0).getFullname());
+				saralyEntity.setStaff_id(searchSalaryModel.getStaff_id());
+				saralyEntity.setSalary_date(yearMonth);
+				saralyEntity.setBasic_salary(Integer.toString(luong_co_ban));
+				saralyEntity.setUp_salary(Integer.toString(luong_tang_ca));
+				saralyEntity.setTotal_days(0);
+				saralyEntity.setTotal_times("00:00");
+				saralyEntity.setRegular_time("00:00");
+				saralyEntity.setTotal_times_up("00:00");
+				saralyEntity.setAllowance(0);
+				saralyEntity.setSalary(0);
+				saralyEntity.setCreate_at(today);	
+			}else {
+				saralyEntity.setFullname(searchAccountByStaffId.get(0).getFullname());
+				saralyEntity.setStaff_id(searchSalaryModel.getStaff_id());
+				saralyEntity.setSalary_date(yearMonth);
+				saralyEntity.setBasic_salary(Integer.toString(luong_co_ban));
+				saralyEntity.setUp_salary(Integer.toString(luong_tang_ca));
+				saralyEntity.setTotal_days(totalDayOfUser);
+				saralyEntity.setTotal_times(totalTimes);
+				saralyEntity.setRegular_time(resultRegularTime);
+				saralyEntity.setTotal_times_up(resultTotalTimeUp);
+				saralyEntity.setAllowance(tien_ho_tro);
+				saralyEntity.setSalary(salary);
+				saralyEntity.setCreate_at(today);	
+			}
 			
 			salaryMapper.insertSalary(saralyEntity);
 
