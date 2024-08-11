@@ -290,15 +290,15 @@ public class MainController {
 			hour = '0' + hour;
 		}
 
-		if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
-			minute = "00";
-		} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
-			minute = "15";
-		} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
-			minute = "30";
-		} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
-			minute = "45";
-		}
+//		if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
+//			minute = "00";
+//		} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+//			minute = "15";
+//		} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+//			minute = "30";
+//		} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+//			minute = "45";
+//		}
 		// Date
 		LocalDate localDate = LocalDate.now();
 //		LocalDate localDate = LocalDate.of(11, 35,30);
