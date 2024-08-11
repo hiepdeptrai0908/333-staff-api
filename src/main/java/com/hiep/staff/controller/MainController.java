@@ -339,15 +339,15 @@ public class MainController {
 			int dataMinute = Integer.parseInt(splitTime[1]);
 			int currentMinute = localTime.getMinute();
 
-			if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
-				currentMinute = 0;
-			} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
-				currentMinute = 15;
-			} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
-				currentMinute = 30;
-			} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
-				currentMinute = 45;
-			}
+//			if (localTime.getMinute() > 0 && localTime.getMinute() < 15) {
+//				currentMinute = 0;
+//			} else if (localTime.getMinute() > 15 && localTime.getMinute() < 30) {
+//				currentMinute = 15;
+//			} else if (localTime.getMinute() > 30 && localTime.getMinute() < 45) {
+//				currentMinute = 30;
+//			} else if (localTime.getMinute() > 45 && localTime.getMinute() < 60) {
+//				currentMinute = 45;
+//			}
 
 			LocalDateTime timeDB = LocalDateTime.of(dataYear, dataMonth, dataDay, dataHour, dataMinute);
 			LocalDateTime timeCurrent = LocalDateTime.of(nowYear, nowMonth, nowDay, currentHour, currentMinute);
