@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.StudentMapper">
+
+	<!-- STUDENT -->
+
+	<insert id="insertStudent">
+		INSERT INTO student(classname, name) VALUES (#{classname}, #{name})
+	</insert>
+	
+	<select id="getAllStudent"
+		resultType="com.hiep.staff.entity.StudentEntity">
+		select * from student order by id asc
+	</select>
+	
+	<select id="getStudentIdByName"
+		resultType="int">
+		select id from student where name = #{name}
+	</select>
+	
+	<select id="getCountStudenByName"
+ 		resultType="int">
+		select count(*) from student where name = #{name}
+	</select>
+	
+	
+</mapper>
