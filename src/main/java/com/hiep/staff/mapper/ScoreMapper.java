@@ -16,7 +16,7 @@ public interface ScoreMapper {
 	
 	List<ScoreEntity> getScoreByClassnameAndLesson(ScoreModel scoreModel);
 	
-	int getMaxLesson();
+	int getMaxLesson(String classname);
 	
 	int checkLesson(int lesson);
 	

@@ -105,9 +105,9 @@ public class StudentController {
 			return listScore;
 		}
 		
-		@GetMapping("/max-lesson")
-		public int getMaxLesson() {
-		    Integer result = scoreMapper.getMaxLesson(); // Dùng Integer thay vì int
+		@GetMapping("/max-lesson/{classname}")
+		public int getMaxLesson(@PathVariable String classname) {
+		    Integer result = scoreMapper.getMaxLesson(classname); // Dùng Integer thay vì int
 		    if (result == 0) {
 		        return 1; // Trả về giá trị mặc định nếu không có dữ liệu
 		    }

@@ -31,7 +31,7 @@
 	</select>
 
 	<select id="getMaxLesson" resultType="int">
-    SELECT COALESCE(MAX(lesson), 0) FROM score
+    SELECT COALESCE(MAX(lesson), 0) FROM score where classname = #{classname}
 	</select>
 	
 	<select id="checkLesson" resultType="int">
