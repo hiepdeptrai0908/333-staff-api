@@ -24,14 +24,13 @@
         score sc ON s.id = sc.student_id AND sc.lesson = #{lesson}
     WHERE 
         s.classname = #{classname}
-    GROUP BY 
-        s.id, sc.id, s.name, sc.lesson, sc.score, sc.error
     ORDER BY 
-        sc.score DESC
+        sc.score DESC, 
+        LEFT(SPLIT_PART(s.name, ' ', array_length(regexp_split_to_array(s.name, ' '), 1)), 1) ASC
 	</select>
 
 	<select id="getMaxLesson" resultType="int">
-    SELECT MAX(lesson) FROM score
+    SELECT COALESCE(MAX(lesson), 0) FROM score
 	</select>
 	
 	<select id="checkLesson" resultType="int">
@@ -49,6 +48,10 @@
         SET score = #{score}, error = #{error}
         WHERE student_id = #{student_id} AND lesson = #{lesson};
     </update>
+    
+    <delete id="deleteByLesson">
+    	DELETE FROM score WHERE lesson = #{lesson};
+	</delete>
 
 
 </mapper>

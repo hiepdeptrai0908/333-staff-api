@@ -12,7 +12,7 @@
 	
 	<select id="getAllStudent"
 		resultType="com.hiep.staff.entity.StudentEntity">
-		select * from student order by id asc
+		select * from student where classname = #{classname} order by LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
 	</select>
 	
 	<select id="getStudentIdByName"
@@ -24,6 +24,12 @@
  		resultType="int">
 		select count(*) from student where name = #{name}
 	</select>
+	
+	<delete id="deleteStudentByNameAndClassname">
+        DELETE FROM student
+        WHERE name = #{name}
+          AND classname = #{classname}
+    </delete>
 	
 	
 </mapper>

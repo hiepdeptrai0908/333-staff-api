@@ -10,7 +10,7 @@ import com.hiep.staff.model.StudentModel;
 @Mapper
 public interface StudentMapper {
 
-	List<StudentEntity> getAllStudent();
+	List<StudentEntity> getAllStudent(String classname);
 
 	void insertStudent(StudentModel studentModel);
 	
@@ -20,5 +20,5 @@ public interface StudentMapper {
 	
 	int getCountStudent();
 
-
+	int deleteStudentByNameAndClassname(StudentModel studentModel);
 }

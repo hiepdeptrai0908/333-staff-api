@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,9 +54,19 @@ public class StudentController {
 	}
 	
 	// Lấy ra tất cả học sinh
-	@GetMapping("/students")
-	public List<StudentEntity> getAllStudents() {
-		return studentMapper.getAllStudent();
+	@GetMapping("/students/{classname}")
+	public List<StudentEntity> getAllStudents(@PathVariable String classname) {
+		return studentMapper.getAllStudent(classname);
+	}
+	
+	@DeleteMapping("/student")
+	public String deleteStudentByNameAndClassname(@RequestBody StudentModel studentModel) {
+		int result = studentMapper.deleteStudentByNameAndClassname(studentModel);
+		if (result != 0) {
+			return "Đã xoá học sinh tên: " + studentModel.getName() + " của lớp " + studentModel.getClassname();
+		}else {
+			return "Không thể xoá ... vì tên " + studentModel.getName() + " ở lớp " + studentModel.getClassname() + " không tồn tại !";
+		}
 	}
 	
 	/**
@@ -95,8 +107,11 @@ public class StudentController {
 		
 		@GetMapping("/max-lesson")
 		public int getMaxLesson() {
-			int result = scoreMapper.getMaxLesson();
-			return result;
+		    Integer result = scoreMapper.getMaxLesson(); // Dùng Integer thay vì int
+		    if (result == 0) {
+		        return 1; // Trả về giá trị mặc định nếu không có dữ liệu
+		    }
+		    return result;
 		}
 		
 		@PutMapping("/score")
@@ -128,6 +143,16 @@ public class StudentController {
 			
 			
 			return "Đã cập nhật điểm cho " + scoreModel.getName() + " bài " + scoreModel.getLesson() + " với điểm là: " + scoreModel.getScore();
+		}
+		
+		@DeleteMapping("/delete-lesson")
+		public String deleteByLesson(@RequestBody ScoreModel scoreModel) {
+			int result = scoreMapper.deleteByLesson(scoreModel.getLesson());
+			if (result != 0) {
+				return "Đã xoá bài " + scoreModel.getLesson() + " của cả lớp " + scoreModel.getClassname();
+			}else {
+				return "Không thể xoá ... vì điểm bài " + scoreModel.getLesson() + " của lớp " + scoreModel.getClassname() + " không tồn tại !";
+			}
 		}
 
 }

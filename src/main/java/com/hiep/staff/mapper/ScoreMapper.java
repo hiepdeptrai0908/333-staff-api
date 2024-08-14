@@ -23,4 +23,6 @@ public interface ScoreMapper {
 	int updateScore(ScoreModel scoreModel);
 
 	boolean hasTestLesson(ScoreModel scoreModel);
+	
+	int deleteByLesson(int lesson);
 }
