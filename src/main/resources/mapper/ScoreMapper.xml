@@ -17,7 +17,8 @@
         s.name,
         sc.lesson,
         sc.score,
-        sc.error
+        sc.error,
+        sc.created_at
     FROM 
         student s
     LEFT JOIN 
