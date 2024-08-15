@@ -6,8 +6,8 @@
 	
 	<!-- SCORE -->
 	<insert id="insertScore">
-    INSERT INTO score (student_id, lesson, score, error) 
-    VALUES (#{student_id}, #{lesson}, #{score}, #{error})
+    INSERT INTO score (student_id, classname, lesson, score, error) 
+    VALUES (#{student_id}, #{classname}, #{lesson}, #{score}, #{error})
 	</insert>
 	
 	<select id="getScoreByClassnameAndLesson" resultType="com.hiep.staff.entity.ScoreEntity">

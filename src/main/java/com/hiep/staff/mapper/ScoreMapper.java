@@ -16,13 +16,13 @@ public interface ScoreMapper {
 	
 	List<ScoreEntity> getScoreByClassnameAndLesson(ScoreModel scoreModel);
 	
-	int getMaxLesson(String classname);
+	Integer getMaxLesson(String classname);
 	
-	int checkLesson(int lesson);
+	Integer checkLesson(int lesson);
 	
-	int updateScore(ScoreModel scoreModel);
+	Integer updateScore(ScoreModel scoreModel);
 
 	boolean hasTestLesson(ScoreModel scoreModel);
 	
-	int deleteByLesson(int lesson);
+	Integer deleteByLesson(int lesson);
 }

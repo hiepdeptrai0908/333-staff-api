@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.hiep.staff.entity.StudentEntity;
+import com.hiep.staff.model.ScoreModel;
 import com.hiep.staff.model.StudentModel;
 
 @Mapper
@@ -14,11 +15,11 @@ public interface StudentMapper {
 
 	void insertStudent(StudentModel studentModel);
 	
-	int getStudentIdByName(String name);
+	Integer getStudentIdByNameAndClassname(ScoreModel scoreModel);
 	
-	int getCountStudenByName(String name);
+	Integer getCountStudenByName(StudentModel studentModel);
 	
-	int getCountStudent();
+	Integer getCountStudent();
 
-	int deleteStudentByNameAndClassname(StudentModel studentModel);
+	Integer deleteStudentByNameAndClassname(StudentModel studentModel);
 }

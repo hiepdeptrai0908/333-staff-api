@@ -44,7 +44,7 @@ public class StudentController {
 	@PostMapping("/student")
 	public String insertStudent(@RequestBody StudentModel studentModel) {
 		// Kiểm tra xem tên học sinh có bị trùng hay không
-		int checkStudentName = studentMapper.getCountStudenByName(studentModel.getName());
+		int checkStudentName = studentMapper.getCountStudenByName(studentModel);
 		if (checkStudentName == 0) {
 			studentMapper.insertStudent(studentModel);
 			return "Đã thêm " + studentModel.getName() + " vào lớp " + studentModel.getClassname();
@@ -83,7 +83,7 @@ public class StudentController {
 			System.out.println("countLesson:" +countLesson);
 			if (countLesson == 0) {
 				for (ScoreModel score : scores) {
-					int studentId = studentMapper.getStudentIdByName(score.getName());
+					int studentId = studentMapper.getStudentIdByNameAndClassname(score);
 					if (score.getScore() == 0) {
 						score.setError(0);
 					}else {
@@ -118,10 +118,10 @@ public class StudentController {
 		public String updateScore(@RequestBody ScoreModel scoreModel) {
 			
 			// Nếu đã tồn tại bài kiểm tra thì update, nếu chưa từng kiểm tra thì sẽ thêm mới
+			int studentId = studentMapper.getStudentIdByNameAndClassname(scoreModel);
+			scoreModel.setStudent_id(studentId);
 			boolean hasTestLesson = scoreMapper.hasTestLesson(scoreModel);
 			if (hasTestLesson) {
-				int studentId = studentMapper.getStudentIdByName(scoreModel.getName());
-				scoreModel.setStudent_id(studentId);
 				int result = scoreMapper.updateScore(scoreModel);
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);
@@ -130,7 +130,6 @@ public class StudentController {
 				}
 				System.out.println("result: " + result);
 			}else {
-				int studentId = studentMapper.getStudentIdByName(scoreModel.getName());
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);
 				}else {

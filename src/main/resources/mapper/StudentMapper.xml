@@ -15,14 +15,14 @@
 		select * from student where classname = #{classname} order by LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
 	</select>
 	
-	<select id="getStudentIdByName"
-		resultType="int">
-		select id from student where name = #{name}
+	<select id="getStudentIdByNameAndClassname"
+        resultType="java.lang.Integer">
+    	select id from student where name = #{name} and classname = #{classname}
 	</select>
 	
 	<select id="getCountStudenByName"
  		resultType="int">
-		select count(*) from student where name = #{name}
+		select count(*) from student where name = #{name} and classname = #{classname}
 	</select>
 	
 	<delete id="deleteStudentByNameAndClassname">
