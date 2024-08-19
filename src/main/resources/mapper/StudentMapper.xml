@@ -7,28 +7,42 @@
 	<!-- STUDENT -->
 
 	<insert id="insertStudent">
-		INSERT INTO student(classname, name) VALUES (#{classname}, #{name})
+		INSERT INTO student(class_id, name) VALUES (#{class_id}, #{name})
 	</insert>
 	
-	<select id="getAllStudent"
+	<select id="getAllStudentByClassId"
 		resultType="com.hiep.staff.entity.StudentEntity">
-		select * from student where classname = #{classname} order by LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
+		select * from student where class_id = #{class_id} order by LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
 	</select>
 	
-	<select id="getStudentIdByNameAndClassname"
-        resultType="java.lang.Integer">
-    	select id from student where name = #{name} and classname = #{classname}
+	<select id="getNameByStudentId"
+        resultType="String">
+    	select name from student where id = #{id} and class_id = #{class_id}
+	</select>
+	
+	<select id="getStudentScoresByStudentIdAndClassId" resultType="com.hiep.staff.entity.ResultStudentEntity">
+    SELECT s.id AS student_id, 
+    s.name, 
+    sc.lesson, 
+    sc.score, 
+    sc.error, 
+    sc.comment, 
+    sc.created_at
+    FROM student s
+    JOIN score sc ON s.id = sc.student_id
+    WHERE s.id = #{student_id} AND s.class_id = #{class_id}
+    ORDER BY sc.lesson ASC
 	</select>
 	
 	<select id="getCountStudenByName"
  		resultType="int">
-		select count(*) from student where name = #{name} and classname = #{classname}
+		select count(*) from student where name = #{name} and class_id = #{class_id}
 	</select>
 	
-	<delete id="deleteStudentByNameAndClassname">
+	<delete id="deleteStudentByNameAndClassId">
         DELETE FROM student
         WHERE name = #{name}
-          AND classname = #{classname}
+          AND class_id = #{class_id}
     </delete>
 	
 	

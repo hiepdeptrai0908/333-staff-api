@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.ClassMapper">
+	
+	<!-- CLASS -->
+	<insert id="insertClass">
+    INSERT INTO class (classname) 
+    VALUES (#{classname})
+	</insert>
+	
+	<select id="getAllClass" resultType="com.hiep.staff.entity.ClassEntity">
+    SELECT 
+        c.id,
+        c.classname,
+        COUNT(s.id) AS student_count,
+        c.created_at
+    FROM 
+        class c
+    LEFT JOIN 
+        student s ON c.id = s.class_id
+    GROUP BY 
+        c.id, c.classname, c.created_at
+    ORDER BY 
+        c.created_at DESC
+	</select>
+
+	<select id="getClassnameById" resultType="String">
+    SELECT classname from class where id = #{id}
+	</select>
+	
+	<select id="hasClassname" resultType="int">
+    SELECT count(*) from class where classname = #{classname}
+	</select>
+	
+	<update id="updateClass">
+        UPDATE class
+        SET classname = #{classname}
+        WHERE id = #{id};
+    </update>
+    
+    <delete id="deleteClass">
+    	DELETE FROM class WHERE id = #{id};
+	</delete>
+
+
+</mapper>

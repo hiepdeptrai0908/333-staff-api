@@ -4,11 +4,13 @@ import lombok.Data;
 
 @Data
 public class ScoreModel {
-	private int id;
+	private int score_id;
+	private int class_id;
 	private int student_id;
 	private String classname;
-	private int lesson;
 	private String name;
+	private int lesson;
 	private int score;
 	private int error;
+	private String comment; 
 }

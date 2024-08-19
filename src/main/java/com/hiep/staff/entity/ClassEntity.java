@@ -3,11 +3,9 @@ package com.hiep.staff.entity;
 import lombok.Data;
 
 @Data
-public class StudentEntity {
+public class ClassEntity {
 	private int id;
-	private int class_id;
-	private String name;
-	private String role;
+	private String classname;
+	private int student_count;
 	private String created_at;
-	
 }

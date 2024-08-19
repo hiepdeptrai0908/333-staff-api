@@ -3,9 +3,8 @@ package com.hiep.staff.model;
 import lombok.Data;
 
 @Data
-public class StudentModel {
+public class ClassModel {
 	private int id;
-	private int class_id;
-	private int student_id;
+	private String classname;
 	private String name;
 }

@@ -11,15 +11,17 @@ import com.hiep.staff.model.StudentModel;
 @Mapper
 public interface StudentMapper {
 
-	List<StudentEntity> getAllStudent(String classname);
+	List<StudentEntity> getAllStudentByClassId(int class_id);
+	
+	List<StudentEntity> getStudentScoresByStudentIdAndClassId(StudentModel studentModel);
 
 	void insertStudent(StudentModel studentModel);
 	
-	Integer getStudentIdByNameAndClassname(ScoreModel scoreModel);
+	String getNameByStudentId(StudentModel studentModel);
 	
 	Integer getCountStudenByName(StudentModel studentModel);
 	
 	Integer getCountStudent();
 
-	Integer deleteStudentByNameAndClassname(StudentModel studentModel);
+	Integer deleteStudentByNameAndClassId(StudentModel studentModel);
 }

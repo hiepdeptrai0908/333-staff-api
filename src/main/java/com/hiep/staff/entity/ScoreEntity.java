@@ -16,6 +16,7 @@ public class ScoreEntity {
 	private int lesson;
 	private int score;
 	private int error;
+	private String comment; 
 	private LocalDateTime created_at;
 	
 }

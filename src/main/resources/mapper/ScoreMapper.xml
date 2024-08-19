@@ -6,11 +6,11 @@
 	
 	<!-- SCORE -->
 	<insert id="insertScore">
-    INSERT INTO score (student_id, classname, lesson, score, error) 
-    VALUES (#{student_id}, #{classname}, #{lesson}, #{score}, #{error})
+    INSERT INTO score (student_id, class_id, lesson, score, error, comment) 
+    VALUES (#{student_id}, #{class_id}, #{lesson}, #{score}, #{error}, #{comment})
 	</insert>
 	
-	<select id="getScoreByClassnameAndLesson" resultType="com.hiep.staff.entity.ScoreEntity">
+	<select id="getScoreByClassIdAndLesson" resultType="com.hiep.staff.entity.ScoreEntity">
     SELECT 
         s.id AS student_id,
         sc.id AS score_id,
@@ -18,24 +18,33 @@
         sc.lesson,
         sc.score,
         sc.error,
+        sc.comment,
         sc.created_at
     FROM 
         student s
     LEFT JOIN 
         score sc ON s.id = sc.student_id AND sc.lesson = #{lesson}
     WHERE 
-        s.classname = #{classname}
+        s.class_id = #{class_id} and lesson = #{lesson}
     ORDER BY 
         sc.score DESC, 
         LEFT(SPLIT_PART(s.name, ' ', array_length(regexp_split_to_array(s.name, ' '), 1)), 1) ASC
 	</select>
+	
+	<select id="getLessonByClassId" resultType="com.hiep.staff.entity.ScoreEntity">
+		SELECT lesson
+		FROM score
+		WHERE class_id = #{class_id}
+		GROUP BY lesson
+		ORDER BY lesson ASC;
+	</select>
 
 	<select id="getMaxLesson" resultType="int">
-    SELECT COALESCE(MAX(lesson), 0) FROM score where classname = #{classname}
+    SELECT COALESCE(MAX(lesson), 0) FROM score where class_id = #{class_id}
 	</select>
 	
-	<select id="checkLesson" resultType="int">
-    SELECT count(*) FROM score where lesson = #{lesson}
+	<select id="checkLessonByClassIdAndLesson" resultType="int">
+    SELECT count(*) FROM score where class_id = #{class_id} and lesson = #{lesson}
 	</select>
 	
 	<select id="hasTestLesson" resultType="boolean">
@@ -46,12 +55,12 @@
 	
 	<update id="updateScore">
         UPDATE score
-        SET score = #{score}, error = #{error}
+        SET score = #{score}, error = #{error}, comment = #{comment}
         WHERE student_id = #{student_id} AND lesson = #{lesson};
     </update>
     
-    <delete id="deleteByLesson">
-    	DELETE FROM score WHERE lesson = #{lesson};
+    <delete id="deleteByClassIdAndLesson">
+    	DELETE FROM score WHERE lesson = #{lesson} and class_id = #{class_id};
 	</delete>
 
 

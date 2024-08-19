@@ -14,15 +14,17 @@ public interface ScoreMapper {
 
 	void insertScore(ScoreModel scoreModel);
 	
-	List<ScoreEntity> getScoreByClassnameAndLesson(ScoreModel scoreModel);
+	List<ScoreEntity> getScoreByClassIdAndLesson(ScoreModel scoreModel);
+	
+	List<ScoreEntity> getLessonByClassId(int class_id);
 	
 	Integer getMaxLesson(String classname);
 	
-	Integer checkLesson(int lesson);
+	Integer checkLessonByClassIdAndLesson(ScoreModel scoreModel);
 	
 	Integer updateScore(ScoreModel scoreModel);
 
 	boolean hasTestLesson(ScoreModel scoreModel);
 	
-	Integer deleteByLesson(int lesson);
+	Integer deleteByClassIdAndLesson(ScoreModel scoreModel);
 }
