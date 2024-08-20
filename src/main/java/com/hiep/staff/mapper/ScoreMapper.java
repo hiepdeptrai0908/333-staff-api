@@ -27,4 +27,6 @@ public interface ScoreMapper {
 	boolean hasTestLesson(ScoreModel scoreModel);
 	
 	Integer deleteByClassIdAndLesson(ScoreModel scoreModel);
+
+	List<ScoreEntity> getScoreByClassIdAndStudentIdAndLesson(ScoreModel scoreModel);
 }

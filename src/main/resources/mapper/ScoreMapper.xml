@@ -38,6 +38,12 @@
 		GROUP BY lesson
 		ORDER BY lesson ASC;
 	</select>
+	
+	<select id="getScoreByClassIdAndStudentIdAndLesson" resultType="com.hiep.staff.entity.ScoreEntity">
+		SELECT *
+		FROM score
+		WHERE class_id = #{class_id} and student_id = #{student_id} and lesson = #{lesson}
+	</select>
 
 	<select id="getMaxLesson" resultType="int">
     SELECT COALESCE(MAX(lesson), 0) FROM score where class_id = #{class_id}

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hiep.staff.entity.ClassEntity;
+import com.hiep.staff.entity.MessageEntity;
 import com.hiep.staff.entity.ScoreEntity;
 import com.hiep.staff.entity.StudentEntity;
 import com.hiep.staff.mapper.ClassMapper;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api")
 @Slf4j
-@CrossOrigin
+@CrossOrigin("*")
 public class StudentController {
 
 	@Autowired
@@ -91,15 +92,14 @@ public class StudentController {
 	 * */
 	// nhập điểm
 		@PostMapping("/score")
-		public String insertScore(@RequestBody List<ScoreModel> scores) {
+		public MessageEntity insertScore(@RequestBody List<ScoreModel> scores) {
 			
 			// kiểm tra xem đã có lesson hay chưa rồi mới insert
 			int countLesson = scoreMapper.checkLessonByClassIdAndLesson(scores.get(1));
 			String classname = classMapper.getClassnameById(scores.get(1).getClass_id());
-			System.out.println("countLesson:" +countLesson);
+			MessageEntity mess = new MessageEntity();
 			if (countLesson == 0) {
 				for (ScoreModel score : scores) {
-					System.out.println(score);
 					if (score.getScore() == 0) {
 						score.setError(0);
 					}else {
@@ -108,9 +108,13 @@ public class StudentController {
 					}
 					scoreMapper.insertScore(score);
 				}
-				return "Nhập điểm bài " + scores.get(1).getLesson() + " cho lớp " + classname + " đã xong...";
+				mess.setStatus("success");
+				mess.setTitle("Nhập điểm bài " + scores.get(1).getLesson() + " cho lớp " + classname + " đã xong...");
+				return mess;
 			}else {
-				return "Thất bại... Điểm bài " + scores.get(1).getLesson() + " của lớp " + classname + " đã tồn tại !";
+				mess.setStatus("error");
+				mess.setTitle("Thất bại... Điểm bài " + scores.get(1).getLesson() + " của lớp " + classname + " đã tồn tại !");
+				return mess;
 			}
 		}
 		
@@ -118,6 +122,11 @@ public class StudentController {
 		public List<ScoreEntity> getScoreByClassIdAndLesson(@RequestBody ScoreModel scoreModel){
 			List<ScoreEntity> listScore = scoreMapper.getScoreByClassIdAndLesson(scoreModel);
 			return listScore;
+		}
+		
+		@PostMapping("/score-student")
+		public List<ScoreEntity> getScoreByClassIdAndStudentIdAndLesson(@RequestBody ScoreModel scoreModel) {
+			return scoreMapper.getScoreByClassIdAndStudentIdAndLesson(scoreModel);
 		}
 		
 		@GetMapping("/max-lesson/{classname}")

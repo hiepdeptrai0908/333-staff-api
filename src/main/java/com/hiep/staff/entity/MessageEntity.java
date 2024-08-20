@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MessageEntity {
-	String title;
-	String status;
+	private String title;
+	private String status;
 }
