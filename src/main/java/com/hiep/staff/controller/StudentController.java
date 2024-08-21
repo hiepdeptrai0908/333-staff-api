@@ -149,6 +149,10 @@ public class StudentController {
 			
 			// Nếu đã tồn tại bài kiểm tra thì update, nếu chưa từng kiểm tra thì sẽ thêm mới
 			boolean hasTestLesson = scoreMapper.hasTestLesson(scoreModel);
+			StudentModel studentModel = new StudentModel();
+			studentModel.setStudent_id(scoreModel.getStudent_id());
+			studentModel.setClass_id(scoreModel.getClass_id());
+			String name = studentMapper.getNameByStudentId(studentModel);
 			if (hasTestLesson) {
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);
@@ -168,7 +172,7 @@ public class StudentController {
 			}
 			
 			
-			return "Đã cập nhật điểm cho " + scoreModel.getName() + " bài " + scoreModel.getLesson() + " với điểm là: " + scoreModel.getScore();
+			return "Đã cập nhật điểm cho " + name + " bài " + scoreModel.getLesson() + " với điểm là: " + scoreModel.getScore();
 		}
 		
 		@DeleteMapping("/lesson")
