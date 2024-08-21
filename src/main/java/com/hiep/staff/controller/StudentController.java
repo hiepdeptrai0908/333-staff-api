@@ -73,15 +73,14 @@ public class StudentController {
 	
 	@DeleteMapping("/student")
 	public String deleteStudentByNameAndClassname(@RequestBody StudentModel studentModel) {
-		String name = studentMapper.getNameByStudentId(studentModel);
+		String name = studentMapper.getNameByClassIdAndStudentId(studentModel);
 		studentModel.setName(name);
 		int result = studentMapper.deleteStudentByNameAndClassId(studentModel);
 		String classname = classMapper.getClassnameById(studentModel.getClass_id());
-		System.out.println(studentModel);
 		if (result != 0) {
-			return "Đã xoá học sinh tên: " + studentModel.getName() + " của lớp " + classname;
+			return "Đã xoá học sinh tên: " + name + " của lớp " + classname;
 		}else {
-			return "Không thể xoá ... vì tên " + studentModel.getName() + " ở lớp " + classname + " không tồn tại !";
+			return "Không thể xoá ... vì tên " + name + " ở lớp " + classname + " không tồn tại !";
 		}
 	}
 	
@@ -149,10 +148,12 @@ public class StudentController {
 			
 			// Nếu đã tồn tại bài kiểm tra thì update, nếu chưa từng kiểm tra thì sẽ thêm mới
 			boolean hasTestLesson = scoreMapper.hasTestLesson(scoreModel);
+			
 			StudentModel studentModel = new StudentModel();
-			studentModel.setStudent_id(scoreModel.getStudent_id());
+			studentModel.setId(scoreModel.getStudent_id());
 			studentModel.setClass_id(scoreModel.getClass_id());
-			String name = studentMapper.getNameByStudentId(studentModel);
+			
+			String name = studentMapper.getNameByClassIdAndStudentId(studentModel);
 			if (hasTestLesson) {
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);
@@ -160,7 +161,6 @@ public class StudentController {
 					scoreModel.setError(50 - scoreModel.getScore());
 				}
 				int result = scoreMapper.updateScore(scoreModel);
-				System.out.println("result: " + result);
 			}else {
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);

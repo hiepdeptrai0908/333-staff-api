@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.hiep.staff.entity.StudentEntity;
 import com.hiep.staff.model.ScoreModel;
+import com.hiep.staff.model.SearchNameModel;
 import com.hiep.staff.model.StudentModel;
 
 @Mapper
@@ -17,7 +18,7 @@ public interface StudentMapper {
 
 	void insertStudent(StudentModel studentModel);
 	
-	String getNameByStudentId(StudentModel studentModel);
+	String getNameByClassIdAndStudentId(StudentModel studentModel);
 	
 	Integer getCountStudenByName(StudentModel studentModel);
 	

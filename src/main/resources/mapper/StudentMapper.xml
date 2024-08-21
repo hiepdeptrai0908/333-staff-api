@@ -15,9 +15,9 @@
 		select * from student where class_id = #{class_id} order by LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
 	</select>
 	
-	<select id="getNameByStudentId"
+	<select id="getNameByClassIdAndStudentId"
         resultType="String">
-    	select name from student where id = #{id} and class_id = #{class_id}
+    	select name from student where class_id = #{class_id} and id = #{id} 
 	</select>
 	
 	<select id="getStudentScoresByStudentIdAndClassId" resultType="com.hiep.staff.entity.ResultStudentEntity">
