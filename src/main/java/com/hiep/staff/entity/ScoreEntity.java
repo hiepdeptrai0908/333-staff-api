@@ -14,6 +14,7 @@ public class ScoreEntity {
 	private int student_id;
 	private String name; 
 	private int lesson;
+	private int max_score;
 	private int score;
 	private int error;
 	private String comment; 

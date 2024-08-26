@@ -24,6 +24,7 @@
     SELECT s.id AS student_id, 
     s.name, 
     sc.lesson, 
+    sc.max_score,
     sc.score, 
     sc.error, 
     sc.comment, 

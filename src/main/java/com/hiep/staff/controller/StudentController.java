@@ -102,17 +102,17 @@ public class StudentController {
 					if (score.getScore() == 0) {
 						score.setError(0);
 					}else {
-						int errorScore = 50 - score.getScore();
+						int errorScore = score.getMax_score() - score.getScore();
 						score.setError(errorScore);
 					}
 					scoreMapper.insertScore(score);
 				}
 				mess.setStatus("success");
-				mess.setTitle("Nhập điểm bài " + scores.get(1).getLesson() + " cho lớp " + classname + " đã xong...");
+				mess.setTitle("Nhập điểm " + scores.get(1).getLesson_name() + " cho lớp " + classname + " đã xong...");
 				return mess;
 			}else {
 				mess.setStatus("error");
-				mess.setTitle("Thất bại... Điểm bài " + scores.get(1).getLesson() + " của lớp " + classname + " đã tồn tại !");
+				mess.setTitle("Thất bại... Điểm " + scores.get(1).getLesson_name() + " của lớp " + classname + " đã tồn tại !");
 				return mess;
 			}
 		}
@@ -158,21 +158,21 @@ public class StudentController {
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);
 				}else {
-					scoreModel.setError(50 - scoreModel.getScore());
+					scoreModel.setError(scoreModel.getMax_score() - scoreModel.getScore());
 				}
 				int result = scoreMapper.updateScore(scoreModel);
 			}else {
 				if (scoreModel.getScore() == 0) {
 					scoreModel.setError(0);
 				}else {
-					int errorScore = 50 - scoreModel.getScore();
+					int errorScore = scoreModel.getMax_score() - scoreModel.getScore();
 					scoreModel.setError(errorScore);
 				}
 				scoreMapper.insertScore(scoreModel);
 			}
 			
 			
-			return "Đã cập nhật điểm cho " + name + " bài " + scoreModel.getLesson() + " với điểm là: " + scoreModel.getScore();
+			return "Đã cập nhật điểm cho " + name + ": " + scoreModel.getLesson_name() + " với điểm là " + scoreModel.getScore();
 		}
 		
 		@DeleteMapping("/lesson")
@@ -180,9 +180,9 @@ public class StudentController {
 			String classname = classMapper.getClassnameById(scoreModel.getClass_id());
 			int result = scoreMapper.deleteByClassIdAndLesson(scoreModel);
 			if (result != 0) {
-				return "Đã xoá bài " + scoreModel.getLesson() + " của cả lớp " + classname;
+				return "Đã xoá " + scoreModel.getLesson_name() + " của cả lớp " + classname;
 			}else {
-				return "Không thể xoá ... vì điểm bài " + scoreModel.getLesson() + " của lớp " + classname + " không tồn tại !";
+				return "Không thể xoá ... vì điểm " + scoreModel.getLesson_name() + " của lớp " + classname + " không tồn tại !";
 			}
 		}
 		

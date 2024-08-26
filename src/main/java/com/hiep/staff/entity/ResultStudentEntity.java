@@ -8,6 +8,7 @@ public class ResultStudentEntity {
 	private int class_id;
 	private int student_id;
 	private int lesson;
+	private int max_score;
 	private String name;
 	private int score;
 	private int error;

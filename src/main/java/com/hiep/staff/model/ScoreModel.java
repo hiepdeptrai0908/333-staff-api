@@ -10,6 +10,8 @@ public class ScoreModel {
 	private String classname;
 	private String name;
 	private int lesson;
+	private String lesson_name;
+	private int max_score;
 	private int score;
 	private int error;
 	private String comment; 
