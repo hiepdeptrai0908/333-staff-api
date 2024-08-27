@@ -94,8 +94,8 @@ public class StudentController {
 		public MessageEntity insertScore(@RequestBody List<ScoreModel> scores) {
 			
 			// kiểm tra xem đã có lesson hay chưa rồi mới insert
-			int countLesson = scoreMapper.checkLessonByClassIdAndLesson(scores.get(1));
-			String classname = classMapper.getClassnameById(scores.get(1).getClass_id());
+			int countLesson = scoreMapper.checkLessonByClassIdAndLesson(scores.get(0));
+			String classname = classMapper.getClassnameById(scores.get(0).getClass_id());
 			MessageEntity mess = new MessageEntity();
 			if (countLesson == 0) {
 				for (ScoreModel score : scores) {
@@ -108,11 +108,11 @@ public class StudentController {
 					scoreMapper.insertScore(score);
 				}
 				mess.setStatus("success");
-				mess.setTitle("Nhập điểm " + scores.get(1).getLesson_name() + " cho lớp " + classname + " đã xong...");
+				mess.setTitle("Nhập điểm " + scores.get(0).getLesson_name() + " cho lớp " + classname + " đã xong...");
 				return mess;
 			}else {
 				mess.setStatus("error");
-				mess.setTitle("Thất bại... Điểm " + scores.get(1).getLesson_name() + " của lớp " + classname + " đã tồn tại !");
+				mess.setTitle("Thất bại... Điểm " + scores.get(0).getLesson_name() + " của lớp " + classname + " đã tồn tại !");
 				return mess;
 			}
 		}
