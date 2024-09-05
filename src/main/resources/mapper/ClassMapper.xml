@@ -12,18 +12,21 @@
 	
 	<select id="getAllClass" resultType="com.hiep.staff.entity.ClassEntity">
     SELECT 
-        c.id,
-        c.classname,
-        COUNT(s.id) AS student_count,
-        c.created_at
-    FROM 
-        class c
-    LEFT JOIN 
-        student s ON c.id = s.class_id
-    GROUP BY 
-        c.id, c.classname, c.created_at
-    ORDER BY 
-        c.created_at DESC
+	    c.id,
+	    c.classname,
+	    COUNT(DISTINCT s.id) AS student_count,  -- Đếm số lượng sinh viên trong mỗi lớp
+	    COUNT(DISTINCT sc.lesson) AS lesson_count, -- Đếm số lượng bài học (lesson) từ bảng score
+	    c.created_at
+	FROM 
+    	class c
+	LEFT JOIN 
+	    student s ON c.id = s.class_id
+	LEFT JOIN 
+	    score sc ON s.id = sc.student_id  -- Thêm JOIN với bảng score
+	GROUP BY 
+	    c.id, c.classname, c.created_at
+	ORDER BY 
+	    c.created_at DESC;
 	</select>
 
 	<select id="getClassnameById" resultType="String">

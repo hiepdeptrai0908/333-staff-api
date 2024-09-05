@@ -186,7 +186,11 @@ public class StudentController {
 			}
 		}
 		
-		// CLASS
+		/**
+		 * 
+		 * CLASS
+		 * 
+		 * */
 		@PostMapping("/class")
 		public String insertClass(@RequestBody ClassModel classModel) {
 			int hasClassname = classMapper.hasClassname(classModel.getClassname());
