@@ -23,4 +23,6 @@ public interface ClassMapper {
 	int deleteClass(int id);
 
 	int hasClassname(String classname);
+
+	int getClassSizeByClassId(Integer class_id);
 }

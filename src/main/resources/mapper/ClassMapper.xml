@@ -26,11 +26,17 @@
 	GROUP BY 
 	    c.id, c.classname, c.created_at
 	ORDER BY 
-	    c.created_at DESC;
+	    c.classname DESC;
 	</select>
 
 	<select id="getClassnameById" resultType="String">
     SELECT classname from class where id = #{id}
+	</select>
+	
+	<select id="getClassSizeByClassId" resultType="int">
+    	SELECT COUNT(*)
+        FROM student
+        WHERE class_id = #{classId}
 	</select>
 	
 	<select id="hasClassname" resultType="int">

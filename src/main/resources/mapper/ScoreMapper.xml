@@ -50,6 +50,10 @@
     SELECT COALESCE(MAX(lesson), 0) FROM score where class_id = #{class_id}
 	</select>
 	
+	<select id="getMaxScoreBylesson" resultType="int">
+    SELECT MAX(max_score) FROM score where class_id = #{class_id} and lesson = #{lesson}
+	</select>
+	
 	<select id="checkLessonByClassIdAndLesson" resultType="int">
     SELECT count(*) FROM score where class_id = #{class_id} and lesson = #{lesson}
 	</select>

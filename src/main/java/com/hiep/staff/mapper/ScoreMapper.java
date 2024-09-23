@@ -29,4 +29,6 @@ public interface ScoreMapper {
 	Integer deleteByClassIdAndLesson(ScoreModel scoreModel);
 
 	List<ScoreEntity> getScoreByClassIdAndStudentIdAndLesson(ScoreModel scoreModel);
+
+	int getMaxScoreBylesson(ScoreModel scoreModel);
 }

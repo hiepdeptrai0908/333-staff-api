@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.LogClassMapper">
+
+	<!-- LOG CLASS -->
+
+	<insert id="insertLogClass">
+        INSERT INTO log_class (class_id, class_size, teacher, count_absent, content, part, log_at)
+        VALUES (#{class_id}, #{class_size}, #{teacher}, #{count_absent}, #{content}, #{part}, #{log_at})
+    </insert>
+	
+	<select id="hasLogClass"
+		resultType="int">
+		select count(*) from log_class where class_id = #{class_id} and part = #{part} and log_at = #{log_at}
+	</select>
+	
+	<select id="getLogIdByClassIdAndPartAndLogAt"
+		resultType="int">
+		select id from log_class where class_id = #{class_id} and part = #{part} and log_at = #{log_at}
+	</select>
+	
+	<select id="getClassLogDetails" resultType="com.hiep.staff.entity.ClassLogDetails">
+	    SELECT 
+	        lc.part,
+	        lc.log_at,
+	        lc.class_id,
+	        lc.id as log_id,
+	        c.classname,
+	        (SELECT COUNT(s.id) FROM student s WHERE s.class_id = lc.class_id) AS student_count,
+	        lc.teacher,
+	        lc.content,
+	        lc.count_absent,
+	        (SELECT COUNT(a.id) FROM absent a WHERE a.log_id = lc.id AND a.absent = true) AS absent_true_count,
+	        (SELECT COUNT(a.id) FROM absent a WHERE a.log_id = lc.id AND a.absent = false) AS absent_false_count,
+	        COALESCE(array_agg(a) FILTER (WHERE a.log_id IS NOT NULL), '{}') AS absentees
+	    FROM log_class lc
+	    JOIN "class" c ON lc.class_id = c.id
+	    LEFT JOIN absent a ON lc.id = a.log_id
+	    <where>
+	        <if test="log_at != null">
+	            AND lc.log_at = #{log_at}
+	        </if>
+	        <if test="class_id != null">
+	            AND lc.class_id = #{class_id}
+	        </if>
+	        <if test="part != null">
+	            AND lc.part = #{part}
+	        </if>
+	        <if test="teacher != null">
+	            AND lc.teacher = #{teacher}
+	        </if>
+	    </where>
+	    GROUP BY lc.id, lc.part, lc.log_at, c.classname, lc.teacher, lc.content, lc.count_absent
+	    ORDER BY lc.log_at DESC, c.classname DESC, lc.part ASC;
+	</select>
+
+	
+	<update id="updateLogClass">
+        UPDATE log_class
+        SET teacher = #{teacher},
+            count_absent = #{count_absent},
+            part = #{part},
+            content = #{content},
+            log_at = #{log_at}
+        	where class_id = #{class_id} and part = #{part} and log_at = #{log_at}
+    </update>
+	
+	
+</mapper>

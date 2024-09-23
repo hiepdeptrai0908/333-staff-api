@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.AbsentMapper">
+
+    <!-- ABSENT -->
+    <insert id="insertAbsent">
+        INSERT INTO absent (class_id, student_id, log_id, absent, reason, part, absent_at)
+        VALUES (#{class_id}, #{student_id}, #{log_id}, #{absent}, #{reason}, #{part}, #{absent_at})
+    </insert>
+    
+    <select id="hasAbsent"
+		resultType="int">
+		select count(*) from absent where log_id = #{log_id} and student_id = #{student_id}
+	</select>
+	
+	<select id="findAllAbsent"
+		resultType="com.hiep.staff.entity.AbsentEntity">
+		select count(*) from absent order by absent_at desc
+	</select>
+	
+	<select id="findAbsentByLogId"
+		resultType="com.hiep.staff.entity.AbsentEntity">
+		SELECT a.*, s.name AS student_name
+	    FROM absent a
+	    JOIN student s ON a.student_id = s.id
+	    WHERE a.log_id = #{logId} AND a.class_id = #{classId}
+	</select>
+    
+    <update id="updateAbsent">
+        UPDATE absent
+        SET absent = #{absent},
+            reason = #{reason},
+            part = #{part},
+            absent_at = #{absent_at}
+        where class_id = #{class_id} and student_id = #{student_id} and part = #{part} and absent_at = #{absent_at}
+    </update>
+	<delete id="deleteAbsentByLogId">
+	    DELETE FROM absent WHERE log_id = #{logId}
+	</delete>
+	
+</mapper>

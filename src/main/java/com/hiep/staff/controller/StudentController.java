@@ -125,7 +125,10 @@ public class StudentController {
 		
 		@PostMapping("/score-student")
 		public List<ScoreEntity> getScoreByClassIdAndStudentIdAndLesson(@RequestBody ScoreModel scoreModel) {
-			return scoreMapper.getScoreByClassIdAndStudentIdAndLesson(scoreModel);
+			int maxScore = scoreMapper.getMaxScoreBylesson(scoreModel);
+			List<ScoreEntity> scoreByClassIdAndStudentIdAndLesson = scoreMapper.getScoreByClassIdAndStudentIdAndLesson(scoreModel);
+			scoreByClassIdAndStudentIdAndLesson.get(0).setMax_score(maxScore);
+			return scoreByClassIdAndStudentIdAndLesson;
 		}
 		
 		@GetMapping("/max-lesson/{classname}")
