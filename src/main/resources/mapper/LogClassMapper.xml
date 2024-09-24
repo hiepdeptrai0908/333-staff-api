@@ -58,7 +58,7 @@
 	        </if>
 	    </where>
 	    GROUP BY lc.id, lc.part, lc.log_at, c.classname, lc.teacher, lc.content, lc.count_absent
-	    ORDER BY lc.log_at DESC, c.classname DESC, lc.part ASC;
+	    ORDER BY lc.log_at DESC, lc.part ASC, c.classname DESC;
 	</select>
 
 	
