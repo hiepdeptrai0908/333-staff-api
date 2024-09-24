@@ -2,11 +2,13 @@ package com.hiep.staff.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hiep.staff.entity.AbsentEntity;
 import com.hiep.staff.entity.ClassLogDetails;
+import com.hiep.staff.entity.LogClassEntity;
 import com.hiep.staff.entity.MessageEntity;
 import com.hiep.staff.mapper.AbsentMapper;
 import com.hiep.staff.mapper.ClassMapper;
@@ -112,6 +115,21 @@ public class LogClassController {
 			}
 		}
 		return message;
+	}
+	
+	@DeleteMapping("/log-class/{id}")
+	public MessageEntity deleteLogClassById(@PathVariable int id) {
+		LogClassEntity logClass = logClassMapper.getLogById(id);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = logClass.getLog_at().format(formatter);
+        
+		String classname = classMapper.getClassnameById(logClass.getClass_id());
+		logClassMapper.deleteLogClassById(id);
+		
+		MessageEntity messageEntity = new MessageEntity();
+		messageEntity.setTitle("Đã xoá bản ghi lớp " + classname + " ngày " + formattedDate);
+		messageEntity.setStatus("Success");
+		return messageEntity;
 	}
 	
 	/**

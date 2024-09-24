@@ -16,6 +16,11 @@
 		select count(*) from log_class where class_id = #{class_id} and part = #{part} and log_at = #{log_at}
 	</select>
 	
+	<select id="getLogById"
+		resultType="com.hiep.staff.entity.LogClassEntity">
+		select * from log_class where id = #{id}
+	</select>
+	
 	<select id="getLogIdByClassIdAndPartAndLogAt"
 		resultType="int">
 		select id from log_class where class_id = #{class_id} and part = #{part} and log_at = #{log_at}
@@ -66,6 +71,10 @@
             log_at = #{log_at}
         	where class_id = #{class_id} and part = #{part} and log_at = #{log_at}
     </update>
+    
+    <delete id="deleteLogClassById">
+   		DELETE FROM log_class WHERE id = #{id}
+	</delete>
 	
 	
 </mapper>
