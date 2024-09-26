@@ -23,4 +23,6 @@ public interface AbsentMapper {
 	List<AbsentEntity> findAbsentByLogId(int logId, int classId);
 
 	void deleteAbsentByLogId(int log_id);
+
+	List<AbsentEntity> getAbsentRecordsByClassAndStudent(Integer classId, Integer studentId);
 }

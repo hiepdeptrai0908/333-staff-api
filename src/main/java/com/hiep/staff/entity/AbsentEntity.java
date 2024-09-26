@@ -12,6 +12,8 @@ public class AbsentEntity {
     private Long log_id;
 
     private Integer class_id;
+    
+    private String classname;
 
     private Integer student_id;
     

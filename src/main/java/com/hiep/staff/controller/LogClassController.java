@@ -151,12 +151,4 @@ public class LogClassController {
 			}
 		}
 	}
-	
-	@GetMapping("/absent")
-	public List<AbsentEntity> findAllAbsent() {
-		return absentMapper.findAllAbsent();
-	}
-	
-	
-
 }

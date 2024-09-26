@@ -15,9 +15,33 @@
 		select count(*) from absent where log_id = #{log_id} and student_id = #{student_id}
 	</select>
 	
-	<select id="findAllAbsent"
-		resultType="com.hiep.staff.entity.AbsentEntity">
-		select count(*) from absent order by absent_at desc
+	<select id="getAbsentRecordsByClassAndStudent" resultType="com.hiep.staff.entity.AbsentEntity">
+	    SELECT 
+	        a.id,
+	        a.class_id,
+	        c.classname,
+	        a.student_id,
+	        s.name AS student_name,
+	        a.absent,
+	        a.reason,
+	        a.part,
+	        a.absent_at,
+	        a.log_id
+	    FROM 
+	        public."absent" a
+	    JOIN 
+	        public."class" c ON a.class_id = c.id
+	    JOIN 
+	        public.student s ON a.student_id = s.id
+	    <where>
+	        <if test="classId != null">
+	            a.class_id = #{classId}
+	        </if>
+	        <if test="studentId != null">
+	            AND a.student_id = #{studentId}
+	        </if>
+	    </where>
+	    ORDER BY absent_at ASC
 	</select>
 	
 	<select id="findAbsentByLogId"

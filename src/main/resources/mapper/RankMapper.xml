@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.RankMapper">
+
+	<select id="getClassStatistics" resultType="com.hiep.staff.entity.ClassRankDetailEntity">
+		SELECT 
+		    c.id AS class_id,
+		    c.classname,
+		    (SELECT COUNT(*) FROM public."absent" a WHERE a.class_id = c.id) AS total_absent,  -- Tổng số buổi vắng mặt cho từng lớp
+		    ROUND(COALESCE(SUM(sc.score) * 100.0 / NULLIF(SUM(sc.max_score), 0), 0), 2) AS average_score_percent,  -- Điểm trung bình tính theo phần trăm, bỏ qua điểm 0
+		    COUNT(DISTINCT sc.lesson) AS total_lessons,  -- Tổng số buổi học
+		    COUNT(DISTINCT lc.id) AS total_log_class  -- Tổng số log_class
+		FROM 
+		    public."class" c
+		LEFT JOIN 
+		    public.student s ON c.id = s.class_id
+		LEFT JOIN 
+		    public.log_class lc ON c.id = lc.class_id
+		LEFT JOIN 
+		    public.absent a ON c.id = a.class_id AND s.id = a.student_id
+		LEFT JOIN 
+		    public.score sc ON s.id = sc.student_id AND sc.score > 0  -- Chỉ lấy các bài có điểm > 0
+		GROUP BY 
+		    c.id, c.classname
+		ORDER BY 
+		    c.classname desc;
+	</select>
+	
+	<select id="getStudentAbsenceStatistics" resultType="com.hiep.staff.entity.StudentAbsenceStatisticsEntity">
+	    SELECT 
+	        s.id AS student_id,
+	        s."name" AS student_name,
+	        c.id AS class_id,
+	        c.classname AS classname,
+	        COUNT(a.id) AS total_absent,
+	        SUM(CASE WHEN a.absent = TRUE THEN 1 ELSE 0 END) AS absent_true,
+	        SUM(CASE WHEN a.absent = FALSE THEN 1 ELSE 0 END) AS absent_false
+	    FROM 
+	        public.student s
+	    JOIN 
+	        public."class" c ON s.class_id = c.id
+	    LEFT JOIN 
+	        public.absent a ON s.id = a.student_id
+	    <where>
+	        <if test="classId != null"> 
+	            AND s.class_id = #{classId}
+	        </if>
+	    </where>
+	    GROUP BY 
+	        s.id, s."name", c.id, c.classname
+	    HAVING 
+	        COUNT(a.id) > 0  <!-- Chỉ lấy những học sinh có total_absent > 0 -->
+	    ORDER BY 
+	        total_absent DESC, classname DESC;
+	</select>
+
+
+	<select id="getStudentScoreStatistics" resultType="com.hiep.staff.entity.StudentScoreStatisticsEntity">
+	    SELECT 
+	        s.id AS student_id,
+	        s.name AS student_name,
+	        c.id AS class_id, -- Thêm class_id
+	        c.classname,
+	        COUNT(CASE 
+	                WHEN sc.score > 0 
+	                THEN sc.lesson 
+	                ELSE NULL 
+	            END) AS total_count_lesson,
+	        AVG(CASE 
+	                WHEN sc.score > 0 
+	                THEN (sc.score * 100.0 / (sc.score + sc.error)) 
+	                ELSE NULL 
+	            END) AS average_score_percent
+	    FROM 
+	        student s
+	    JOIN 
+	        class c ON s.class_id = c.id
+	    LEFT JOIN 
+	        score sc ON sc.student_id = s.id
+	    <where>
+	        <if test="classId != null"> 
+	            s.class_id = #{classId}
+	        </if>
+	    </where>
+		    GROUP BY 
+		        s.id, s.name, c.id, c.classname -- Thêm c.id vào GROUP BY
+		    HAVING 
+		        COUNT(CASE WHEN sc.score > 0 THEN sc.lesson ELSE NULL END) > 0
+		        AND COUNT(CASE WHEN sc.score > 0 THEN sc.lesson ELSE NULL END) > (
+		            SELECT MIN(total_lesson_count) 
+		            FROM (
+		                SELECT COUNT(CASE WHEN score.score > 0 THEN score.lesson END) AS total_lesson_count
+		                FROM score 
+		                GROUP BY student_id
+		            ) AS subquery
+		        )
+		    ORDER BY 
+		        average_score_percent DESC -- chỉ sắp xếp những học sinh có total_count_lesson lớn hơn giá trị tối thiểu
+	</select>
+	
+	<select id="getStudentScoreDetails" resultType="com.hiep.staff.entity.StudentScoreDetailsEntity">
+	    SELECT 
+	        sc.lesson,
+	        sc.max_score,
+	        sc.score,
+	        CASE 
+	            WHEN sc.max_score IS NOT NULL AND sc.max_score > 0 
+	            THEN (sc.score::float / sc.max_score) * 100 
+	            ELSE 0 
+	        END AS score_percentage,
+	        s."name" AS student_name,  -- Thêm tên sinh viên
+	        c.classname AS classname     -- Thêm tên lớp
+	    FROM 
+	        public.score sc
+	    JOIN 
+	        public.student s ON sc.student_id = s.id  -- Join bảng student để lấy student_name
+	    JOIN 
+	        public."class" c ON sc.class_id = c.id  -- Join bảng class để lấy classname
+	    WHERE 
+	        sc.class_id = #{classId} 
+	        AND sc.student_id = #{studentId}
+	    ORDER BY 
+	        sc.lesson ASC
+	</select>
+
+	
+
+
+</mapper>
