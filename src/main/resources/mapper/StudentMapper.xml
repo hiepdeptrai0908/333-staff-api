@@ -22,7 +22,7 @@
 	
 	<select id="getAllStudents" resultType="com.hiep.staff.entity.StudentEntity">
 	    SELECT 
-	        s.id AS student_id,
+	        s.id AS id,
 	        s."name" AS name,
 	        c.classname AS classname,
 	        s.class_id AS class_id,
