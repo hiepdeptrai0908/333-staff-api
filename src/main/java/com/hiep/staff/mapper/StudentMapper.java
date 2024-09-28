@@ -25,4 +25,6 @@ public interface StudentMapper {
 	Integer getCountStudent();
 
 	Integer deleteStudentByNameAndClassId(StudentModel studentModel);
+
+	List<StudentEntity> getAllStudents(Integer classId);
 }

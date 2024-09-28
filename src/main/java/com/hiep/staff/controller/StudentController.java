@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hiep.staff.entity.ClassEntity;
@@ -60,7 +61,13 @@ public class StudentController {
 		}
 	}
 	
-	// Lấy ra tất cả học sinh
+	// lấy ra tất cả học sinh
+	@GetMapping("/students")
+	public List<StudentEntity> getAllStudents(@RequestParam(required = false) Integer classId) {
+	    return studentMapper.getAllStudents(classId);
+	}
+	
+	// Lấy ra tất cả học sinh theo lớp
 	@GetMapping("/class/{class_id}/students")
 	public List<StudentEntity> getAllStudentsByClassId(@PathVariable int class_id) {
 		return studentMapper.getAllStudentByClassId(class_id);

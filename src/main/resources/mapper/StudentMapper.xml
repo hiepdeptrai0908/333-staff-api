@@ -20,6 +20,26 @@
     	select name from student where class_id = #{class_id} and id = #{id} 
 	</select>
 	
+	<select id="getAllStudents" resultType="com.hiep.staff.entity.StudentEntity">
+	    SELECT 
+	        s.id AS student_id,
+	        s."name" AS name,
+	        c.classname AS classname,
+	        s.class_id AS class_id,
+	        s.created_at AS created_at
+	    FROM 
+	        public.student s
+	    LEFT JOIN 
+	        public."class" c ON s.class_id = c.id
+	    <where>
+	        <if test="classId != null"> 
+	            AND s.class_id = #{classId}
+	        </if>
+	    </where>
+	    ORDER BY created_at desc, classname desc
+	</select>
+		
+	
 	<select id="getStudentScoresByStudentIdAndClassId" resultType="com.hiep.staff.entity.ResultStudentEntity">
     SELECT s.id AS student_id, 
     s.name, 
