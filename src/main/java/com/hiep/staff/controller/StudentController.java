@@ -132,11 +132,30 @@ public class StudentController {
 		
 		@PostMapping("/score-student")
 		public List<ScoreEntity> getScoreByClassIdAndStudentIdAndLesson(@RequestBody ScoreModel scoreModel) {
-			int maxScore = scoreMapper.getMaxScoreBylesson(scoreModel);
-			List<ScoreEntity> scoreByClassIdAndStudentIdAndLesson = scoreMapper.getScoreByClassIdAndStudentIdAndLesson(scoreModel);
-			scoreByClassIdAndStudentIdAndLesson.get(0).setMax_score(maxScore);
-			return scoreByClassIdAndStudentIdAndLesson;
+		    System.out.println(scoreModel);
+		    
+		    // Lấy điểm tối đa cho bài học
+		    int maxScore = scoreMapper.getMaxScoreBylesson(scoreModel);
+		    
+		    // Lấy danh sách điểm
+		    List<ScoreEntity> scoreByClassIdAndStudentIdAndLesson = scoreMapper.getScoreByClassIdAndStudentIdAndLesson(scoreModel);
+		    System.out.println(scoreByClassIdAndStudentIdAndLesson);
+
+		    // Kiểm tra xem danh sách có rỗng không
+		    if (scoreByClassIdAndStudentIdAndLesson.isEmpty()) {
+		        // Nếu rỗng, tạo một đối tượng mới chỉ với max_score
+		        ScoreEntity emptyScoreEntity = new ScoreEntity();
+		        emptyScoreEntity.setMax_score(maxScore);
+		        // Trả về danh sách chỉ chứa đối tượng với max_score
+		        scoreByClassIdAndStudentIdAndLesson.add(emptyScoreEntity);
+		    } else {
+		        // Nếu không rỗng, set max_score cho phần tử đầu tiên
+		        scoreByClassIdAndStudentIdAndLesson.get(0).setMax_score(maxScore);
+		    }
+		    
+		    return scoreByClassIdAndStudentIdAndLesson;
 		}
+
 		
 		@GetMapping("/max-lesson/{classname}")
 		public int getMaxLesson(@PathVariable String classname) {
