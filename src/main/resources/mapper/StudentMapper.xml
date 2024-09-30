@@ -36,9 +36,12 @@
 	            AND s.class_id = #{classId}
 	        </if>
 	    </where>
-	    ORDER BY created_at desc, classname desc
+	    ORDER BY 
+	        LEFT(SPLIT_PART(s.name, ' ', array_length(regexp_split_to_array(s.name, ' '), 1)), 1) ASC, 
+	        s.created_at DESC, 
+	        c.classname DESC
 	</select>
-		
+
 	
 	<select id="getStudentScoresByStudentIdAndClassId" resultType="com.hiep.staff.entity.ResultStudentEntity">
     SELECT s.id AS student_id, 
