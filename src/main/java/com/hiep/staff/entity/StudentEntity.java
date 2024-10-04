@@ -8,6 +8,7 @@ public class StudentEntity {
 	private int class_id;
 	private String classname;
 	private String name;
+	private String sex;
 	private String role;
 	private String created_at;
 }

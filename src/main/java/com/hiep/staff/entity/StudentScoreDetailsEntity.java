@@ -6,6 +6,7 @@ import lombok.Data;
 public class StudentScoreDetailsEntity {
 	private String classname;
 	private String student_name;
+	private String sex;
     private Integer lesson;
     private Integer max_score;
     private Integer score;

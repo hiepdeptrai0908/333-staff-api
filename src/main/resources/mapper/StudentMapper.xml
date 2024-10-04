@@ -7,7 +7,7 @@
 	<!-- STUDENT -->
 
 	<insert id="insertStudent">
-		INSERT INTO student(class_id, name) VALUES (#{class_id}, #{name})
+		INSERT INTO student(class_id, name, sex) VALUES (#{class_id}, #{name}, #{sex})
 	</insert>
 	
 	<select id="getAllStudentByClassId"
@@ -24,6 +24,7 @@
 	    SELECT 
 	        s.id AS id,
 	        s."name" AS name,
+	       	s.sex AS sex,
 	        c.classname AS classname,
 	        s.class_id AS class_id,
 	        s.created_at AS created_at

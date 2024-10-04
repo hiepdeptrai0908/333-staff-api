@@ -8,4 +8,5 @@ public class StudentModel {
 	private int class_id;
 	private int student_id;
 	private String name;
+	private String sex;
 }
