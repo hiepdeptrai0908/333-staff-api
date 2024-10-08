@@ -12,7 +12,13 @@
 	
 	<select id="getAllStudentByClassId"
 		resultType="com.hiep.staff.entity.StudentEntity">
-		select * from student where class_id = #{class_id} order by LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
+		select * from student where class_id = #{class_id} 
+		order by 
+		LEFT(SPLIT_PART(name, ' ', array_length(regexp_split_to_array(name, ' '), 1)), 1) ASC
+		
+		ORDER BY 
+        REVERSE(SPLIT_PART(REVERSE(name), ' ', 1)) ASC, name ASC
+	        
 	</select>
 	
 	<select id="getNameByClassIdAndStudentId"
@@ -38,7 +44,8 @@
 	        </if>
 	    </where>
 	    ORDER BY 
-	        LEFT(SPLIT_PART(s.name, ' ', array_length(regexp_split_to_array(s.name, ' '), 1)), 1) ASC, 
+        REVERSE(SPLIT_PART(REVERSE(s.name), ' ', 1)) ASC, 
+	        s.name ASC,
 	        s.created_at DESC, 
 	        c.classname DESC
 	</select>
