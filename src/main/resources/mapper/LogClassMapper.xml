@@ -58,7 +58,14 @@
 	        </if>
 	    </where>
 	    GROUP BY lc.id, lc.part, lc.log_at, c.classname, lc.teacher, lc.content, lc.count_absent
-	    ORDER BY lc.log_at DESC, lc.part ASC, c.classname DESC;
+	    ORDER BY lc.log_at DESC,
+	    	CASE 
+                 WHEN lc.part = 'BUỔI TỐI' THEN 1
+                 WHEN lc.part = 'BUỔI CHIỀU' THEN 2
+                 WHEN lc.part = 'BUỔI SÁNG' THEN 3
+                 ELSE 4
+             END, 
+	    	c.classname DESC;
 	</select>
 
 	
