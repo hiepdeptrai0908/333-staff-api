@@ -50,11 +50,11 @@
 	    </where>
 	    GROUP BY 
 	        s.id, s."name", c.id, c.classname
-	    HAVING 
-	        COUNT(a.id) > 0  <!-- Chỉ lấy những học sinh có total_absent > 0 -->
+	    -- Không cần HAVING COUNT(a.id) > 0 nữa để lấy học sinh có vắng hoặc không vắng
 	    ORDER BY 
 	        total_absent DESC, classname DESC;
 	</select>
+
 
 
 	<select id="getStudentScoreStatistics" resultType="com.hiep.staff.entity.StudentScoreStatisticsEntity">
