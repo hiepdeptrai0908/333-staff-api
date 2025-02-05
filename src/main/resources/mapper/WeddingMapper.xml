@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hiep.staff.mapper.WeddingMapper">
+
+	<insert id="insertAcceptWedding">
+        INSERT INTO wedding (user_name, attendance, relation, wish, created_at)
+        VALUES (#{user_name}, #{attendance}, #{relation}, #{wish}, CURRENT_TIMESTAMP)
+    </insert>
+    
+    <select id="getAllWish"
+		resultType="com.hiep.staff.entity.WeddingEntity">
+		select * from wedding ORDER BY created_at DESC;
+	</select>
+</mapper>
