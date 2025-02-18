@@ -59,7 +59,6 @@ public class WeddingController {
         // Xây dựng nội dung email với HTML
         StringBuilder messageContent = new StringBuilder();
         messageContent.append("<html><body>");
-        messageContent.append("<h2><b>📩 Bạn có một lời chúc mới từ: ").append(userName).append("</b></h2>");
         messageContent.append("<p>💌 Danh sách tất cả lời chúc:</p>");
         
         // Tạo bảng HTML
