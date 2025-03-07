@@ -74,8 +74,17 @@ public class WeddingController {
             throw new IllegalArgumentException("Tên người dùng không được để trống!");
         }
 
+        // Chuẩn hóa giá trị relation trước khi lưu vào database
+        String relation = viewerModel.getRelation();
+        if ("bride".equalsIgnoreCase(relation)) {
+            relation = "Cô Dâu";
+        } else if ("groom".equalsIgnoreCase(relation)) {
+            relation = "Chú Rể";
+        }
+        viewerModel.setRelation(relation);
+
         weddingViewerMapper.insertViewer(viewerModel);
-        log.info("Đã lưu thông tin người xem vào database: {}", viewerModel.getUser_name());
+        log.info("Đã lưu thông tin người xem vào database: {} - Quan hệ: {}", viewerModel.getUser_name(), relation);
 
         List<WeddingViewerEntity> allViewers = weddingViewerMapper.getAllViewers();
         sendViewerMail(viewerModel.getUser_name(), allViewers);
@@ -92,6 +101,8 @@ public class WeddingController {
 
         StringBuilder messageContent = new StringBuilder();
         messageContent.append("<html><body>");
+        messageContent.append("<p>Nội dung:").append(allWishes.get(0).getWish()).append("</p>");
+        messageContent.append("<br />");
         messageContent.append("<p>💌 Danh sách tất cả lời chúc:</p>");
         
         messageContent.append("<table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse; width: 100%;'>");

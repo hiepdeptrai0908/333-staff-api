@@ -6,14 +6,14 @@
 
     <!-- Lưu thông tin người dùng xem thiệp -->
     <insert id="insertViewer">
-        INSERT INTO wedding_viewers (user_name, relation, viewed_at)
+        INSERT INTO wedding_viewer (user_name, relation, viewed_at)
         VALUES (#{user_name}, #{relation}, CURRENT_TIMESTAMP)
     </insert>
 
     <!-- Lấy danh sách tất cả người đã xem thiệp -->
     <select id="getAllViewers"
         resultType="com.hiep.staff.entity.WeddingViewerEntity">
-        SELECT * FROM wedding_viewers ORDER BY viewed_at DESC;
+        SELECT * FROM wedding_viewer ORDER BY viewed_at DESC;
     </select>
 
 </mapper>
