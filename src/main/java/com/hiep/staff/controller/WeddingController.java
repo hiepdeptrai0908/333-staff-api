@@ -80,6 +80,8 @@ public class WeddingController {
             relation = "Cô Dâu";
         } else if ("groom".equalsIgnoreCase(relation)) {
             relation = "Chú Rể";
+        } else if ("groom-bride".equalsIgnoreCase(relation)) {
+            relation = "Dâu và Rể";
         }
         viewerModel.setRelation(relation);
 
