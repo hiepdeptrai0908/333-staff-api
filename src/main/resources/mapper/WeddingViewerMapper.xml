@@ -13,7 +13,7 @@
     <!-- Lấy danh sách tất cả người đã xem thiệp -->
     <select id="getAllViewers"
         resultType="com.hiep.staff.entity.WeddingViewerEntity">
-        SELECT * FROM wedding_viewer ORDER BY viewed_at DESC;
+        SELECT * FROM wedding_viewer;
     </select>
 
 </mapper>

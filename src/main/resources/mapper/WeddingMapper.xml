@@ -11,6 +11,6 @@
     
     <select id="getAllWish"
 		resultType="com.hiep.staff.entity.WeddingEntity">
-		select * from wedding ORDER BY created_at DESC;
+		select * from wedding;
 	</select>
 </mapper>
