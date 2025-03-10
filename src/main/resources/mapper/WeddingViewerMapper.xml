@@ -6,14 +6,25 @@
 
     <!-- Lưu thông tin người dùng xem thiệp -->
     <insert id="insertViewer">
-        INSERT INTO wedding_viewer (user_name, relation, viewed_at)
-        VALUES (#{user_name}, #{relation}, CURRENT_TIMESTAMP)
-    </insert>
+	    INSERT INTO wedding_viewer (user_name, relation, viewed_at)
+	    VALUES (#{user_name}, #{relation}, CURRENT_TIMESTAMP - INTERVAL '2 hours')
+	</insert>
+
 
     <!-- Lấy danh sách tất cả người đã xem thiệp -->
     <select id="getAllViewers"
         resultType="com.hiep.staff.entity.WeddingViewerEntity">
         SELECT * FROM wedding_viewer;
     </select>
+    
+    <delete id="deleteViewer">
+		delete from wedding_viewer where
+		user_name = #{user_name}
+	</delete>
+	
+	<delete id="deleteViewerById">
+		delete from wedding_viewer where
+		id = #{id}
+	</delete>
 
 </mapper>

@@ -13,4 +13,10 @@ public interface WeddingViewerMapper {
     void insertViewer(WeddingViewerModel viewerModel);
 
     List<WeddingViewerEntity> getAllViewers();
+
+	void deleteViewer(String user_name);
+
+	void deleteViewerById(Integer id);
+    
+    
 }

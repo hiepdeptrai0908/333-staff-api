@@ -5,9 +5,10 @@
 <mapper namespace="com.hiep.staff.mapper.WeddingMapper">
 
 	<insert id="insertAcceptWedding">
-        INSERT INTO wedding (user_name, attendance, relation, wish, created_at)
-        VALUES (#{user_name}, #{attendance}, #{relation}, #{wish}, CURRENT_TIMESTAMP)
-    </insert>
+	    INSERT INTO wedding (user_name, attendance, relation, wish, created_at)
+	    VALUES (#{user_name}, #{attendance}, #{relation}, #{wish}, CURRENT_TIMESTAMP - INTERVAL '2 hours')
+	</insert>
+
     
     <select id="getAllWish"
 		resultType="com.hiep.staff.entity.WeddingEntity">

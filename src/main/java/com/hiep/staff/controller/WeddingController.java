@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @RequestMapping("/api/wedding")
-@CrossOrigin
+@CrossOrigin("*")
 public class WeddingController {
 
     @Autowired
@@ -201,5 +204,22 @@ public class WeddingController {
         } catch (Exception e) {
             log.error("❌ Lỗi khi gửi email thông báo người xem: {}", e.getMessage());
         }
+    }
+    
+    @DeleteMapping("/delete-username/{user_name}")
+    public String deleteViewerByUsername(@PathVariable String user_name) {
+    	weddingViewerMapper.deleteViewer(user_name);
+    	return "Đã xoá người xem tên: " + user_name;
+    }
+    
+    @DeleteMapping("/delete-id/{id}")
+    public String deleteViewerById(@PathVariable Integer id) {
+    	weddingViewerMapper.deleteViewerById(id);
+    	return "Đã xoá người xem có id là: " + id;
+    }
+    
+    @GetMapping("/show-viewers")
+    public List<WeddingViewerEntity> getAllViewers(){
+    	return weddingViewerMapper.getAllViewers();
     }
 }
