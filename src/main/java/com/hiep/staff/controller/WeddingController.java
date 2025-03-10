@@ -206,13 +206,13 @@ public class WeddingController {
         }
     }
     
-    @DeleteMapping("/delete-username/{user_name}")
+    @GetMapping("/delete-username/{user_name}")
     public String deleteViewerByUsername(@PathVariable String user_name) {
     	weddingViewerMapper.deleteViewer(user_name);
     	return "Đã xoá người xem tên: " + user_name;
     }
     
-    @DeleteMapping("/delete-id/{id}")
+    @GetMapping("/delete-id/{id}")
     public String deleteViewerById(@PathVariable Integer id) {
     	weddingViewerMapper.deleteViewerById(id);
     	return "Đã xoá người xem có id là: " + id;
