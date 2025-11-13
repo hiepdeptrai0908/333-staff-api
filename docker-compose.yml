@@ -1,37 +1,12 @@
-version: '3.8'
 
 services:
-  # 1. Cấu hình PostgreSQL
-  db:
-    image: postgres:18 # Lưu ý: Hiện tại bản ổn định phổ biến là 16 hoặc 17.
-    # Nếu v18 chưa có trên Docker Hub, hãy đổi thành postgres:latest
-    container_name: 333_postgres
-    environment:
-      POSTGRES_USER: quanghiep       # User DB
-      POSTGRES_PASSWORD: avatar # Pass DB
-      POSTGRES_DB: 333_staff     # Tên DB
-    ports:
-      - "5432:5432" # Map port để bạn có thể access từ bên ngoài nếu cần (dev)
-    volumes:
-      - pgdata:/var/lib/postgresql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U quanghiep -d 333_staff"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  # 2. Cấu hình Spring Boot App
   app:
     build: .
     container_name: 333-staff-api
     ports:
-      - "8888:8888" # Web chạy port 8080
-    depends_on:
-      db:
-        condition: service_healthy
+      - "8888:8888"
     environment:
-      # Cấu hình kết nối DB (Quan trọng: host là tên service 'db' ở trên, không phải localhost)
-      SPRING_DATASOURCE_URL: jdbc:postgresql://333_postgres:5432/333_staff
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/333_food
       SPRING_DATASOURCE_USERNAME: quanghiep
       SPRING_DATASOURCE_PASSWORD: avatar
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
