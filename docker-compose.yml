@@ -5,8 +5,11 @@ services:
     container_name: 333-staff-api
     ports:
       - "8888:8888"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/333_food
+      TZ: Asia/Tokyo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/333_food?sslmode=disable
       SPRING_DATASOURCE_USERNAME: quanghiep
       SPRING_DATASOURCE_PASSWORD: avatar
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
